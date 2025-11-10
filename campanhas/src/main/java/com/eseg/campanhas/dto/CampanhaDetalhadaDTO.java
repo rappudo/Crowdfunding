@@ -3,9 +3,9 @@ package com.eseg.campanhas.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.ArrayList;
 
-public class CampanhaDTO {
+// DTO detalhado para resposta expandida (/campanhas/{id})
+public class CampanhaDetalhadaDTO {
     private Long id;
     private String titulo;
     private String descricao;
@@ -15,13 +15,18 @@ public class CampanhaDTO {
     private LocalDateTime dataEncerramento;
     private int status; // 0 - encerrada | 1 - em progresso | 2 - cancelada
 
-    private List<Long> idPagamentos;
-    private List<Long> idComentarios;
+    // Listas de objetos
+    private List<ComentarioDTO> comentarios;
+    private List<PagamentoDTO> pagamentos;
+    private List<RecompensaDTO> recompensas;
+    private UsuarioDTO criador;
 
-    public CampanhaDTO() {}
+    public CampanhaDetalhadaDTO() {}
 
-    public CampanhaDTO(Long id, String titulo, String descricao, BigDecimal meta,
-                    BigDecimal valorArrecadado, LocalDateTime dataCriacao, LocalDateTime dataEncerramento, int status) {
+    public CampanhaDetalhadaDTO(Long id, String titulo, String descricao, BigDecimal meta, BigDecimal valorArrecadado,
+                                LocalDateTime dataCriacao, LocalDateTime dataEncerramento, int status,
+                                List<ComentarioDTO> comentarios, List<PagamentoDTO> pagamentos,
+                                List<RecompensaDTO> recompensas, UsuarioDTO criador) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -30,9 +35,14 @@ public class CampanhaDTO {
         this.dataCriacao = dataCriacao;
         this.dataEncerramento = dataEncerramento;
         this.status = status;
-        this.idPagamentos = new ArrayList<>();
-        this.idComentarios = new ArrayList<>();
+        this.comentarios = comentarios;
+        this.pagamentos = pagamentos;
+        this.recompensas = recompensas;
+        this.criador = criador;
     }
+
+    // Getters e setters
+
 
     public Long getId() {
         return id;
@@ -98,19 +108,35 @@ public class CampanhaDTO {
         this.status = status;
     }
 
-    public List<Long> getIdPagamentos() {
-        return idPagamentos;
+    public List<ComentarioDTO> getComentarios() {
+        return comentarios;
     }
 
-    public void setIdPagamentos(List<Long> idPagamentos) {
-        this.idPagamentos = idPagamentos;
+    public void setComentarios(List<ComentarioDTO> comentarios) {
+        this.comentarios = comentarios;
     }
 
-    public List<Long> getIdComentarios() {
-        return idComentarios;
+    public List<PagamentoDTO> getPagamentos() {
+        return pagamentos;
     }
 
-    public void setIdComentarios(List<Long> idComentarios) {
-        this.idComentarios = idComentarios;
+    public void setPagamentos(List<PagamentoDTO> pagamentos) {
+        this.pagamentos = pagamentos;
+    }
+
+    public List<RecompensaDTO> getRecompensas() {
+        return recompensas;
+    }
+
+    public void setRecompensas(List<RecompensaDTO> recompensas) {
+        this.recompensas = recompensas;
+    }
+
+    public UsuarioDTO getCriador() {
+        return criador;
+    }
+
+    public void setCriador(UsuarioDTO criador) {
+        this.criador = criador;
     }
 }
