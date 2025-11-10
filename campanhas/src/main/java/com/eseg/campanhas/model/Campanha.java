@@ -2,6 +2,8 @@ package com.eseg.campanhas.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Campanha {
     private Long id;
@@ -12,6 +14,9 @@ public class Campanha {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataEncerramento;
     private int status; // 0 - encerrada | 1 - em progresso | 2 - cancelada
+
+    private List<Long> idPagamentos;
+    private List<Long> idComentarios;
 
     public Campanha() {}
 
@@ -25,6 +30,8 @@ public class Campanha {
         this.dataCriacao = dataCriacao;
         this.dataEncerramento = dataEncerramento;
         this.status = status;
+        this.idPagamentos = new ArrayList<>();
+        this.idComentarios = new ArrayList<>();
     }
 
     public Long getId() {
@@ -89,5 +96,21 @@ public class Campanha {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public List<Long> getIdPagamentos() {
+        return idPagamentos;
+    }
+
+    public void setIdPagamentos(List<Long> idPagamentos) {
+        this.idPagamentos = idPagamentos;
+    }
+
+    public List<Long> getIdComentarios() {
+        return idComentarios;
+    }
+
+    public void setIdComentarios(List<Long> idComentarios) {
+        this.idComentarios = idComentarios;
     }
 }

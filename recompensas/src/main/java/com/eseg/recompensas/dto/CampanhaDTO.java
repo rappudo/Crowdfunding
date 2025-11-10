@@ -1,4 +1,4 @@
-package com.eseg.campanhas.dto;
+package com.eseg.recompensas.dto;
 
 public class CampanhaDTO {
 }
