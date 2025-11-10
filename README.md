@@ -1,7 +1,3 @@
-# README.md do Projeto Crowdfunding Microsserviços
-
-***
-
 # Projeto Crowdfunding com Microsserviços
 
 ## Objetivo do Projeto
