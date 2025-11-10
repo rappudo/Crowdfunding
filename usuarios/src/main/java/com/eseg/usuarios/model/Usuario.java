@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Usuario {
-    private long id;
+    private Long id;
     private String nome;
     private String telefone;
     private String email;
@@ -16,7 +16,7 @@ public class Usuario {
 
     public Usuario() {}
 
-    public Usuario(long id, String nome, String telefone, String email) {
+    public Usuario(Long id, String nome, String telefone, String email) {
         this.id = id;
         this.nome = nome;
         this.telefone = telefone;
@@ -27,11 +27,11 @@ public class Usuario {
         this.idRecompensasRecebidas = new  ArrayList<>();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

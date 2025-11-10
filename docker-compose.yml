@@ -1,0 +1,57 @@
+version: "3.8"
+services:
+  campanha:
+    build:
+      context: ./campanha
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./campanha/src/main/resources/campanhas.json:/app/campanhas.json
+    environment:
+      - CAMPANHA_JSON_PATH=/app/campanhas.json
+  comentarios:
+    build:
+      context: ./comentarios
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./comentarios/src/main/resources/comentarios.json:/app/comentarios.json
+    environment:
+      - COMENTARIO_JSON_PATH=/app/comentarios.json
+  pagamentos:
+    build:
+      context: ./pagamentos
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./pagamentos/src/main/resources/pagamentos.json:/app/pagamentos.json
+    environment:
+      - PAGAMENTO_JSON_PATH=/app/pagamentos.json
+  recompensas:
+    build:
+      context: ./recompensas
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./recompensas/src/main/resources/recompensas.json:/app/recompensas.json
+    environment:
+      - RECOMPENSA_JSON_PATH=/app/recompensas.json
+  usuarios:
+    build:
+      context: ./usuarios
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    volumes:
+      - ./usuarios/src/main/resources/usuarios.json:/app/usuarios.json
+    environment:
+      - USUARIO_JSON_PATH=/app/usuarios.json
+
+networks:
+  default:
+    name: crowdfunding-network
+    driver: bridge

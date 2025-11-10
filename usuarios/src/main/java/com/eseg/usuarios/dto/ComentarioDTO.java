@@ -3,15 +3,15 @@ package com.eseg.usuarios.dto;
 import java.time.LocalDateTime;
 
 public class ComentarioDTO {
-    private long id;
+    private Long id;
     private String texto;
     private LocalDateTime dataPostagem;
-    private long idCampanha;
-    private long idUsuario;
+    private Long idCampanha;
+    private Long idUsuario;
 
     public ComentarioDTO() {}
 
-    public ComentarioDTO(long id, String texto, LocalDateTime dataPostagem, long idCampanha, long idUsuario) {
+    public ComentarioDTO(Long id, String texto, LocalDateTime dataPostagem, Long idCampanha, Long idUsuario) {
         this.id = id;
         this.texto = texto;
         this.dataPostagem = dataPostagem;
@@ -19,11 +19,11 @@ public class ComentarioDTO {
         this.idUsuario = idUsuario;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -43,19 +43,19 @@ public class ComentarioDTO {
         this.dataPostagem = dataPostagem;
     }
 
-    public long getIdCampanha() {
+    public Long getIdCampanha() {
         return idCampanha;
     }
 
-    public void setIdCampanha(long idCampanha) {
+    public void setIdCampanha(Long idCampanha) {
         this.idCampanha = idCampanha;
     }
 
-    public long getIdUsuario() {
+    public Long getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(long idUsuario) {
+    public void setIdUsuario(Long idUsuario) {
         this.idUsuario = idUsuario;
     }
 }

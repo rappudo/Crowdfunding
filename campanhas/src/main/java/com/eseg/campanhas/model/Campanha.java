@@ -15,8 +15,9 @@ public class Campanha {
     private LocalDateTime dataEncerramento;
     private int status; // 0 - encerrada | 1 - em progresso | 2 - cancelada
 
-    private List<Long> idPagamentos;
     private List<Long> idComentarios;
+    private List<Long> idPagamentos;
+    private List<Long> idRecompensas;
 
     public Campanha() {}
 
@@ -30,8 +31,9 @@ public class Campanha {
         this.dataCriacao = dataCriacao;
         this.dataEncerramento = dataEncerramento;
         this.status = status;
-        this.idPagamentos = new ArrayList<>();
         this.idComentarios = new ArrayList<>();
+        this.idPagamentos = new ArrayList<>();
+        this.idRecompensas = new ArrayList<>();
     }
 
     public Long getId() {
@@ -112,5 +114,13 @@ public class Campanha {
 
     public void setIdComentarios(List<Long> idComentarios) {
         this.idComentarios = idComentarios;
+    }
+
+    public List<Long> getIdRecompensas() {
+        return idRecompensas;
+    }
+
+    public void setIdRecompensas(List<Long> idRecompensas) {
+        this.idRecompensas = idRecompensas;
     }
 }

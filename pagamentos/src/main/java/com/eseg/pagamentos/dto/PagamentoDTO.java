@@ -4,25 +4,25 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class PagamentoDTO {
-    private long id;
+    private Long id;
     private BigDecimal valor;
-    private long idCampanha;
+    private Long idCampanha;
     private LocalDateTime dataPagamento;
 
     public PagamentoDTO() {}
 
-    public PagamentoDTO(long id, BigDecimal valor, long idCampanha, LocalDateTime dataPagamento) {
+    public PagamentoDTO(Long id, BigDecimal valor, Long idCampanha, LocalDateTime dataPagamento) {
         this.id = id;
         this.valor = valor;
         this.idCampanha = idCampanha;
         this.dataPagamento = dataPagamento;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -34,11 +34,11 @@ public class PagamentoDTO {
         this.valor = valor;
     }
 
-    public long getIdCampanha() {
+    public Long getIdCampanha() {
         return idCampanha;
     }
 
-    public void setIdCampanha(long idCampanha) {
+    public void setIdCampanha(Long idCampanha) {
         this.idCampanha = idCampanha;
     }
 

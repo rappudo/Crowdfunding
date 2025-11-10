@@ -3,15 +3,15 @@ package com.eseg.comentarios.dto;
 import java.math.BigDecimal;
 
 public class RecompensaDTO {
-    private long id;
+    private Long id;
     private String titulo;
     private String Descricao;
     private BigDecimal valorMinimo;
-    private long idCampanha;
+    private Long idCampanha;
 
     public RecompensaDTO() {}
 
-    public RecompensaDTO(long id, String titulo, String descricao, BigDecimal valorMinimo, long idCampanha) {
+    public RecompensaDTO(Long id, String titulo, String descricao, BigDecimal valorMinimo, Long idCampanha) {
         this.id = id;
         this.titulo = titulo;
         Descricao = descricao;
@@ -19,11 +19,11 @@ public class RecompensaDTO {
         this.idCampanha = idCampanha;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -51,11 +51,11 @@ public class RecompensaDTO {
         this.valorMinimo = valorMinimo;
     }
 
-    public long getIdCampanha() {
+    public Long getIdCampanha() {
         return idCampanha;
     }
 
-    public void setIdCampanha(long idCampanha) {
+    public void setIdCampanha(Long idCampanha) {
         this.idCampanha = idCampanha;
     }
 }
