@@ -54,8 +54,8 @@ public class RecompensaRepository {
         return loadAll();
     }
 
-    // 2. Buscar por ID
-    public Optional<Recompensa> findByID(Long id) {
+    // 2. Buscar por Id
+    public Optional<Recompensa> findById(Long id) {
         return loadAll().stream().filter(p -> p.getId().equals(id)).findFirst();
     }
 
@@ -69,7 +69,7 @@ public class RecompensaRepository {
         return novaRecompensa;
     }
 
-    // 4. Atualizar recompensa por ID
+    // 4. Atualizar recompensa por Id
     public void update(Long id, Recompensa recompensaAtualizada) {
         List<Recompensa> recompensas = loadAll();
         boolean updated = false;

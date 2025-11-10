@@ -54,8 +54,8 @@ public class PagamentoRepository {
         return loadAll();
     }
 
-    // 2. Buscar por ID
-    public Optional<Pagamento> findByID(Long id) {
+    // 2. Buscar por Id
+    public Optional<Pagamento> findById(Long id) {
         return loadAll().stream().filter(p -> p.getId().equals(id)).findFirst();
     }
 
@@ -69,7 +69,7 @@ public class PagamentoRepository {
         return novoPagamento;
     }
 
-    // 4. Atualizar pagamento por ID
+    // 4. Atualizar pagamento por Id
     public void update(Long id, Pagamento pagamentoAtualizado) {
         List<Pagamento> pagamentos = loadAll();
         boolean updated = false;

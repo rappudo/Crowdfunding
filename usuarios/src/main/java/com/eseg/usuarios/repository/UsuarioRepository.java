@@ -54,8 +54,8 @@ public class UsuarioRepository {
         return loadAll();
     }
 
-    // 2. Buscar por ID
-    public Optional<Usuario> findByID(Long id) {
+    // 2. Buscar por Id
+    public Optional<Usuario> findById(Long id) {
         return loadAll().stream().filter(p -> p.getId().equals(id)).findFirst();
     }
 
@@ -69,7 +69,7 @@ public class UsuarioRepository {
         return novoUsuario;
     }
 
-    // 4. Atualizar usuario por ID
+    // 4. Atualizar usuario por Id
     public void update(Long id, Usuario usuarioAtualizado) {
         List<Usuario> usuarios = loadAll();
         boolean updated = false;

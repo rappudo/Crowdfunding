@@ -55,7 +55,7 @@ public class ComentarioRepository {
         return loadAll();
     }
 
-    // 2. Buscar por ID
+    // 2. Buscar por Id
     public Optional<Comentario> findById(Long id) {
         return loadAll().stream().filter(c -> c.getId().equals(id)).findFirst();
     }
@@ -70,7 +70,7 @@ public class ComentarioRepository {
         return novoComentario;
     }
 
-    // 4. Atualizar comentário por ID
+    // 4. Atualizar comentário por Id
     public void update(Long id, Comentario comentarioAtualizado) {
         List<Comentario> comentarios = loadAll();
         boolean updated = false;
