@@ -18,7 +18,7 @@ public class CampanhaController {
 
     private final CampanhaService campanhaService;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate = new RestTemplate();
 
     // URLs base dos outros microsserviços, configuráveis via application.properties
     @Value("${comentario.service.url:http://localhost:8081}")
@@ -33,14 +33,17 @@ public class CampanhaController {
     @Value("${usuario.service.url:http://localhost:8084}")
     private String usuarioServiceUrl;
 
-    public CampanhaController(CampanhaService campanhaService) {
+    public CampanhaController(CampanhaService campanhaService, RestTemplate restTemplate) {
         this.campanhaService = campanhaService;
+        this.restTemplate = restTemplate;
     }
 
     // Listar todas as campanhas: retorna lista simples com objetos Campanha (não expandido)
     @GetMapping
     public List<Campanha> listarTodas() {
-        return campanhaService.listarTodas();
+        List<Campanha> campanhas = campanhaService.listarTodas();
+        System.out.println("Quantidade campanhas encontradas: " + campanhas.size());
+        return campanhas;
     }
 
     // Buscar campanha detalhada por Id (com dados expandido dos microsserviços)
@@ -72,6 +75,7 @@ public class CampanhaController {
         // Montar objeto DTO completo para resposta
         CampanhaDetalhadaDTO dto = new CampanhaDetalhadaDTO(
                 campanha.getId(),
+                campanha.getIdCriador(),
                 campanha.getTitulo(),
                 campanha.getDescricao(),
                 campanha.getMeta(),

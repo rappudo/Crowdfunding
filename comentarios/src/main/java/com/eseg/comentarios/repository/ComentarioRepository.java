@@ -3,8 +3,12 @@ package com.eseg.comentarios.repository;
 import com.eseg.comentarios.model.Comentario;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +24,11 @@ public class ComentarioRepository {
 
     private final AtomicLong idGenerator = new AtomicLong();
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
 
-    public ComentarioRepository() {
+    @PostConstruct
+    public void init() {
         initializeIdGenerator();
     }
 
@@ -36,8 +42,11 @@ public class ComentarioRepository {
         try {
             File file = new File(jsonPath);
             if (!file.exists() || file.length() == 0) return new ArrayList<>();
-            return mapper.readValue(file, new TypeReference<List<Comentario>>() {});
+            List<Comentario> comentarios = mapper.readValue(file, new TypeReference<List<Comentario>>(){});
+            System.out.println("DEBUG: JSON lido com " + comentarios.size() + " comentarios");
+            return comentarios;
         } catch (IOException e) {
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }

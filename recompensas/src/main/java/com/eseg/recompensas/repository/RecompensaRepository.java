@@ -3,8 +3,12 @@ package com.eseg.recompensas.repository;
 import com.eseg.recompensas.model.Recompensa;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +24,11 @@ public class RecompensaRepository {
 
     private final AtomicLong idGenerator = new AtomicLong();
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
 
-    public RecompensaRepository() {
+    @PostConstruct
+    public void init() {
         initializeIdGenerator();
     }
 
@@ -31,12 +37,16 @@ public class RecompensaRepository {
         long maxId = recompensas.stream().mapToLong(Recompensa::getId).max().orElse(0L);
         idGenerator.set(maxId + 1);
     }
+
     private List<Recompensa> loadAll() {
         try {
             File file = new File(jsonPath);
             if (!file.exists() || file.length() == 0) return new ArrayList<>();
-            return mapper.readValue(file, new TypeReference<List<Recompensa>>(){});
+            List<Recompensa> recompensas = mapper.readValue(file, new TypeReference<List<Recompensa>>(){});
+            System.out.println("DEBUG: JSON lido com " + recompensas.size() + " recompensas");
+            return recompensas;
         } catch (IOException e) {
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }

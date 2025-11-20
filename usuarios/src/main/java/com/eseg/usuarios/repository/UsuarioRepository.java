@@ -3,8 +3,12 @@ package com.eseg.usuarios.repository;
 import com.eseg.usuarios.model.Usuario;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +24,11 @@ public class UsuarioRepository {
 
     private final AtomicLong idGenerator = new AtomicLong();
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
 
-    public UsuarioRepository() {
+    @PostConstruct
+    public void init() {
         initializeIdGenerator();
     }
 
@@ -31,12 +37,16 @@ public class UsuarioRepository {
         long maxId = usuarios.stream().mapToLong(Usuario::getId).max().orElse(0L);
         idGenerator.set(maxId + 1);
     }
+
     private List<Usuario> loadAll() {
         try {
             File file = new File(jsonPath);
             if (!file.exists() || file.length() == 0) return new ArrayList<>();
-            return mapper.readValue(file, new TypeReference<List<Usuario>>(){});
+            List<Usuario> usuarios = mapper.readValue(file, new TypeReference<List<Usuario>>(){});
+            System.out.println("DEBUG: JSON lido com " + usuarios.size() + " usuarios");
+            return usuarios;
         } catch (IOException e) {
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }

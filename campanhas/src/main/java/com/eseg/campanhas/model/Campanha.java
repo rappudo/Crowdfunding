@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class Campanha {
     private Long id;
+    private Long idCriador;
     private String titulo;
     private String descricao;
     private BigDecimal meta;
@@ -21,9 +22,10 @@ public class Campanha {
 
     public Campanha() {}
 
-    public Campanha(Long id, String titulo, String descricao, BigDecimal meta,
+    public Campanha(Long id, Long idCriador, String titulo, String descricao, BigDecimal meta,
                     BigDecimal valorArrecadado, LocalDateTime dataCriacao, LocalDateTime dataEncerramento, int status) {
         this.id = id;
+        this.idCriador = idCriador;
         this.titulo = titulo;
         this.descricao = descricao;
         this.meta = meta;
@@ -122,5 +124,13 @@ public class Campanha {
 
     public void setIdRecompensas(List<Long> idRecompensas) {
         this.idRecompensas = idRecompensas;
+    }
+
+    public Long getIdCriador() {
+        return idCriador;
+    }
+
+    public void setIdCriador(Long idCriador) {
+        this.idCriador = idCriador;
     }
 }

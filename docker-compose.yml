@@ -1,57 +1,64 @@
-version: "3.8"
 services:
-  campanha:
-    build:
-      context: ./campanha
-      dockerfile: Dockerfile
+  campanha-service:
+    image: campanha-service
     ports:
       - "8080:8080"
-    volumes:
-      - ./campanha/src/main/resources/campanhas.json:/app/campanhas.json
     environment:
-      - CAMPANHA_JSON_PATH=/app/campanhas.json
-  comentarios:
-    build:
-      context: ./comentarios
-      dockerfile: Dockerfile
+      - SPRING_PROFILES_ACTIVE=prod
+      # As URLs apontam para os nomes dos serviços definidos abaixo
+      - campanha.service.url=http://campanha-service:8080
+      - comentario.service.url=http://comentario-service:8081
+      - pagamento.service.url=http://pagamento-service:8082
+      - recompensa.service.url=http://recompensa-service:8083
+      - usuario.service.url=http://usuario-service:8084
+      # Define onde o Java vai procurar o arquivo DENTRO do container
+      - campanha.json.path=/app/data/campanhas.json
+    volumes:
+      # O Campanha Service só precisa do campanhas.json
+      - ./data/campanhas.json:/app/data/campanhas.json
+    depends_on:
+      - comentario-service
+      - pagamento-service
+      - recompensa-service
+      - usuario-service
+
+  comentario-service:
+    image: comentario-service
     ports:
       - "8081:8081"
-    volumes:
-      - ./comentarios/src/main/resources/comentarios.json:/app/comentarios.json
     environment:
-      - COMENTARIO_JSON_PATH=/app/comentarios.json
-  pagamentos:
-    build:
-      context: ./pagamentos
-      dockerfile: Dockerfile
+      - SPRING_PROFILES_ACTIVE=prod
+      - comentario.json.path=/app/data/comentarios.json
+    volumes:
+      # Comentario Service só monta o comentarios.json
+      - ./data/comentarios.json:/app/data/comentarios.json
+
+  pagamento-service:
+    image: pagamento-service
     ports:
       - "8082:8082"
-    volumes:
-      - ./pagamentos/src/main/resources/pagamentos.json:/app/pagamentos.json
     environment:
-      - PAGAMENTO_JSON_PATH=/app/pagamentos.json
-  recompensas:
-    build:
-      context: ./recompensas
-      dockerfile: Dockerfile
+      - SPRING_PROFILES_ACTIVE=prod
+      - pagamento.json.path=/app/data/pagamentos.json
+    volumes:
+      - ./data/pagamentos.json:/app/data/pagamentos.json
+
+  recompensa-service:
+    image: recompensa-service
     ports:
       - "8083:8083"
-    volumes:
-      - ./recompensas/src/main/resources/recompensas.json:/app/recompensas.json
     environment:
-      - RECOMPENSA_JSON_PATH=/app/recompensas.json
-  usuarios:
-    build:
-      context: ./usuarios
-      dockerfile: Dockerfile
+      - SPRING_PROFILES_ACTIVE=prod
+      - recompensa.json.path=/app/data/recompensas.json
+    volumes:
+      - ./data/recompensas.json:/app/data/recompensas.json
+
+  usuario-service:
+    image: usuario-service
     ports:
       - "8084:8084"
-    volumes:
-      - ./usuarios/src/main/resources/usuarios.json:/app/usuarios.json
     environment:
-      - USUARIO_JSON_PATH=/app/usuarios.json
-
-networks:
-  default:
-    name: crowdfunding-network
-    driver: bridge
+      - SPRING_PROFILES_ACTIVE=prod
+      - usuario.json.path=/app/data/usuarios.json
+    volumes:
+      - ./data/usuarios.json:/app/data/usuarios.json
