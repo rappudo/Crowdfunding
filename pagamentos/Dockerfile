@@ -1,10 +1,18 @@
-FROM gradle:8.3.3-jdk17 AS build
-WORKDIR /home/gradle/project
-COPY --chown=gradle:gradle . .
-RUN gradle clean build --no-daemon
+FROM gradle:jdk21-jammy AS build
 
-FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-COPY --from=build /home/gradle/project/build/libs/*.jar app.jar
+
+COPY . .
+
+RUN gradle bootJar --no-daemon -x test
+
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/build/libs/*.jar app.jar
+COPY ./src/main/resources/pagamentos.json /app/data/pagamentos.json
+
 EXPOSE 8082
+
 ENTRYPOINT ["java", "-jar", "app.jar"]

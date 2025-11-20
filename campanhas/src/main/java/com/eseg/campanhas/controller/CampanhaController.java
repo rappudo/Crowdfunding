@@ -40,7 +40,9 @@ public class CampanhaController {
     // Listar todas as campanhas: retorna lista simples com objetos Campanha (não expandido)
     @GetMapping
     public List<Campanha> listarTodas() {
-        return campanhaService.listarTodas();
+        List<Campanha> campanhas = campanhaService.listarTodas();
+        System.out.println("Quantidade campanhas encontradas: " + campanhas.size());
+        return campanhas;
     }
 
     // Buscar campanha detalhada por Id (com dados expandido dos microsserviços)
@@ -72,6 +74,7 @@ public class CampanhaController {
         // Montar objeto DTO completo para resposta
         CampanhaDetalhadaDTO dto = new CampanhaDetalhadaDTO(
                 campanha.getId(),
+                campanha.getIdCriador(),
                 campanha.getTitulo(),
                 campanha.getDescricao(),
                 campanha.getMeta(),

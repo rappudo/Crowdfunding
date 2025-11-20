@@ -7,6 +7,7 @@ import java.util.List;
 // DTO detalhado para resposta expandida (/campanhas/{id})
 public class CampanhaDetalhadaDTO {
     private Long id;
+    private Long idCriador;
     private String titulo;
     private String descricao;
     private BigDecimal meta;
@@ -23,11 +24,12 @@ public class CampanhaDetalhadaDTO {
 
     public CampanhaDetalhadaDTO() {}
 
-    public CampanhaDetalhadaDTO(Long id, String titulo, String descricao, BigDecimal meta, BigDecimal valorArrecadado,
+    public CampanhaDetalhadaDTO(Long id, Long idCriador, String titulo, String descricao, BigDecimal meta, BigDecimal valorArrecadado,
                                 LocalDateTime dataCriacao, LocalDateTime dataEncerramento, int status,
                                 List<ComentarioDTO> comentarios, List<PagamentoDTO> pagamentos,
                                 List<RecompensaDTO> recompensas, UsuarioDTO criador) {
         this.id = id;
+        this.idCriador = idCriador;
         this.titulo = titulo;
         this.descricao = descricao;
         this.meta = meta;

@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "texto": "Excelente iniciativa, espero que tenha muito sucesso!",
+    "dataPostagem": "2025-01-11T09:30:00",
+    "idCampanha": 2,
+    "idUsuario": 1
+  },
+  {
+    "id": 2,
+    "texto": "Gostaria de contribuir, como posso ajudar?",
+    "dataPostagem": "2025-01-12T14:15:00",
+    "idCampanha": 1,
+    "idUsuario": 2
+  },
+  {
+    "id": 3,
+    "texto": "Campanha incrível, já compartilhei com meus amigos.",
+    "dataPostagem": "2025-02-06T11:20:00",
+    "idCampanha": 1,
+    "idUsuario": 3
+  },
+  {
+    "id": 4,
+    "texto": "Que bom que existem pessoas como vocês fazendo a diferença.",
+    "dataPostagem": "2025-02-10T18:00:00",
+    "idCampanha": 2,
+    "idUsuario": 4
+  },
+  {
+    "id": 5,
+    "texto": "Tenho uma ideia para ajudar na divulgação, posso mandar?",
+    "dataPostagem": "2025-02-15T10:05:00",
+    "idCampanha": 2,
+    "idUsuario": 5
+  },
+  {
+    "id": 6,
+    "texto": "Adorei a viagem cultural, espero que aconteça logo!",
+    "dataPostagem": "2025-03-05T16:45:00",
+    "idCampanha": 3,
+    "idUsuario": 6
+  },
+  {
+    "id": 7,
+    "texto": "Já doei para ajudar essa causa, parabéns a todos envolvidos!",
+    "dataPostagem": "2025-03-07T08:50:00",
+    "idCampanha": 3,
+    "idUsuario": 7
+  },
+  {
+    "id": 8,
+    "texto": "Alguém sabe se ainda dá pra colaborar?",
+    "dataPostagem": "2025-03-08T13:30:00",
+    "idCampanha": 3,
+    "idUsuario": 8
+  },
+  {
+    "id": 9,
+    "texto": "Espero que essa campanha alcance a meta, estamos torcendo.",
+    "dataPostagem": "2025-03-10T09:25:00",
+    "idCampanha": 3,
+    "idUsuario": 9
+  },
+  {
+    "id": 10,
+    "texto": "Uma iniciativa maravilhosa, desejo muito sucesso!",
+    "dataPostagem": "2025-03-11T15:00:00",
+    "idCampanha": 3,
+    "idUsuario": 10
+  }
+]
