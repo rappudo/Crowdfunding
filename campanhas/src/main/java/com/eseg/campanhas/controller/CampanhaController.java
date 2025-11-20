@@ -18,7 +18,7 @@ public class CampanhaController {
 
     private final CampanhaService campanhaService;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate = new RestTemplate();
 
     // URLs base dos outros microsserviços, configuráveis via application.properties
     @Value("${comentario.service.url:http://localhost:8081}")
@@ -33,8 +33,9 @@ public class CampanhaController {
     @Value("${usuario.service.url:http://localhost:8084}")
     private String usuarioServiceUrl;
 
-    public CampanhaController(CampanhaService campanhaService) {
+    public CampanhaController(CampanhaService campanhaService, RestTemplate restTemplate) {
         this.campanhaService = campanhaService;
+        this.restTemplate = restTemplate;
     }
 
     // Listar todas as campanhas: retorna lista simples com objetos Campanha (não expandido)
