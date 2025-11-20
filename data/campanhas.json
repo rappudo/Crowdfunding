@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "idCriador": 1,
+    "titulo": "Campanha para Construção de Escola",
+    "descricao": "Construir uma escola na zona rural para crianças carentes.",
+    "meta": 50000.00,
+    "valorArrecadado": 12000.50,
+    "dataCriacao": "2025-01-10T08:00:00",
+    "dataEncerramento": "2025-12-31T23:59:59",
+    "status": 1,
+    "idComentarios": [2, 3],
+    "idPagamentos": [2, 3],
+    "idRecompensas": [2, 3]
+  },
+  {
+    "id": 2,
+    "idCriador": 2,
+    "titulo": "Campanha de Apoio a Animais",
+    "descricao": "Apoiar o abrigo de animais abandonados com doações de ração e medicamentos.",
+    "meta": 30000.00,
+    "valorArrecadado": 15000.00,
+    "dataCriacao": "2025-02-05T14:30:00",
+    "dataEncerramento": "2025-11-15T23:55:00",
+    "status": 1,
+    "idComentarios": [1, 4, 5],
+    "idPagamentos": [1, 4, 5, 6],
+    "idRecompensas": [1, 4, 5, 6]
+  },
+  {
+    "id": 3,
+    "idCriador": 3,
+    "titulo": "Campanha de Viagem Cultural",
+    "descricao": "Financiar uma viagem para estudantes conhecerem a história e cultura local.",
+    "meta": 10000.00,
+    "valorArrecadado": 8000.75,
+    "dataCriacao": "2025-03-01T09:15:00",
+    "dataEncerramento": "2025-09-30T23:59:59",
+    "status": 2,
+    "idComentarios": [6, 7, 8, 9, 10],
+    "idPagamentos": [7, 8, 9, 10],
+    "idRecompensas": [7, 8, 9, 10]
+  }
+]

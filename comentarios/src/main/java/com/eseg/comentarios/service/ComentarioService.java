@@ -14,7 +14,7 @@ public class ComentarioService {
     public ComentarioService(ComentarioRepository comentarioRepository) {this.comentarioRepository = comentarioRepository;}
 
     //1. Carregar os comentários de uma campanha
-    public List<Comentario> comentarios() {
+    public List<Comentario> listarTodos() {
             return comentarioRepository.findAll();
     }
 

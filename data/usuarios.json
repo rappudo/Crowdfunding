@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "nome": "Ana Silva",
+    "telefone": "(11) 99999-0001",
+    "email": "ana.silva@email.com",
+    "idCampanhasCriadas": [1],
+    "idComentariosFeitos": [1],
+    "idPagamentosFeitos":[1],
+    "idRecompensasRecebidas": [1]
+  },
+  {
+    "id": 2,
+    "nome": "Bruno Costa",
+    "telefone": "(21) 98888-0002",
+    "email": "bruno.costa@email.com",
+    "idCampanhasCriadas": [2],
+    "idComentariosFeitos": [2],
+    "idPagamentosFeitos": [2],
+    "idRecompensasRecebidas": [2]
+  },
+  {
+    "id": 3,
+    "nome": "Carla Souza",
+    "telefone": "(31) 97777-0003",
+    "email": "carla.souza@email.com",
+    "idCampanhasCriadas": [3],
+    "idComentariosFeitos": [3],
+    "idPagamentosFeitos": [3],
+    "idRecompensasRecebidas": [3]
+  },
+  {
+    "id": 4,
+    "nome": "Diego Martins",
+    "telefone": "(41) 96666-0004",
+    "email": "diego.martins@email.com",
+    "idCampanhasCriadas": [],
+    "idComentariosFeitos": [4],
+    "idPagamentosFeitos": [4],
+    "idRecompensasRecebidas": [4]
+  },
+  {
+    "id": 5,
+    "nome": "Elisa Fernandes",
+    "telefone": "(51) 95555-0005",
+    "email": "elisa.fernandes@email.com",
+    "idCampanhasCriadas": [],
+    "idComentariosFeitos": [5],
+    "idPagamentosFeitos": [5],
+    "idRecompensasRecebidas": [5]
+  },
+  {
+    "id": 6,
+    "nome": "Fábio Oliveira",
+    "telefone": "(61) 94444-0006",
+    "email": "fabio.oliveira@email.com",
+    "idCampanhasCriadas": [],
+    "idComentariosFeitos": [6],
+    "idPagamentosFeitos": [6],
+    "idRecompensasRecebidas": [6]
+  },
+  {
+    "id": 7,
+    "nome": "Gabriela Lima",
+    "telefone": "(71) 93333-0007",
+    "email": "gabriela.lima@email.com",
+    "idCampanhasCriadas": [],
+    "idComentariosFeitos": [7],
+    "idPagamentosFeitos": [7],
+    "idRecompensasRecebidas": [7]
+  },
+  {
+    "id": 8,
+    "nome": "Henrique Santos",
+    "telefone": "(81) 92222-0008",
+    "email": "henrique.santos@email.com",
+    "idCampanhasCriadas": [],
+    "idComentariosFeitos": [8],
+    "idPagamentosFeitos": [8],
+    "idRecompensasRecebidas": [8]
+  },
+  {
+    "id": 9,
+    "nome": "Isabela Rocha",
+    "telefone": "(91) 91111-0009",
+    "email": "isabela.rocha@email.com",
+    "idCampanhasCriadas": [],
+    "idComentariosFeitos": [9],
+    "idPagamentosFeitos": [9],
+    "idRecompensasRecebidas": [9]
+  },
+  {
+    "id": 10,
+    "nome": "João Pereira",
+    "telefone": "(99) 90000-0010",
+    "email": "joao.pereira@email.com",
+    "idCampanhasCriadas": [],
+    "idComentariosFeitos": [10],
+    "idPagamentosFeitos": [10],
+    "idRecompensasRecebidas": [10]
+  }
+]
