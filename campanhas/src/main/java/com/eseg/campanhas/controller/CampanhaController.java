@@ -46,47 +46,57 @@ public class CampanhaController {
         return campanhas;
     }
 
-    // Buscar campanha detalhada por Id (com dados expandido dos microsserviços)
     @GetMapping("/{id}")
     public ResponseEntity<CampanhaDetalhadaDTO> listarPorId(@PathVariable Long id) {
         Campanha campanha = campanhaService.buscarPorId(id);
 
-        // Buscar detalhes dos comentários - como List<ComentarioDTO>
+        // 1. Comentários com proteção
         List<ComentarioDTO> comentarios = campanha.getIdComentarios() == null ? List.of() :
                 campanha.getIdComentarios().stream()
-                        .map(cid -> restTemplate.getForObject(comentarioServiceUrl + "/comentarios/" + cid + "/resumo", ComentarioDTO.class))
+                        .map(cid -> {
+                            try {
+                                return restTemplate.getForObject(comentarioServiceUrl + "/comentarios/" + cid, ComentarioDTO.class);
+                            } catch (Exception e) { return null; } //
+                        })
+                        .filter(java.util.Objects::nonNull)
                         .collect(Collectors.toList());
 
-        // Buscar detalhes dos pagamentos - como List<PagamentoDTO>
+        // 2. Pagamentos com proteção
         List<PagamentoDTO> pagamentos = campanha.getIdPagamentos() == null ? List.of() :
                 campanha.getIdPagamentos().stream()
-                        .map(pid -> restTemplate.getForObject(pagamentoServiceUrl + "/pagamentos/" + pid, PagamentoDTO.class))
+                        .map(pid -> {
+                            try {
+                                return restTemplate.getForObject(pagamentoServiceUrl + "/pagamentos/" + pid, PagamentoDTO.class);
+                            } catch (Exception e) { return null; }
+                        })
+                        .filter(java.util.Objects::nonNull)
                         .collect(Collectors.toList());
 
-        // Buscar detalhes das recompensas - como List<RecompensaDTO>
+        // 3. Recompensas com proteção
         List<RecompensaDTO> recompensas = campanha.getIdRecompensas() == null ? List.of() :
                 campanha.getIdRecompensas().stream()
-                        .map(rid -> restTemplate.getForObject(recompensaServiceUrl + "/recompensas/" + rid, RecompensaDTO.class))
+                        .map(rid -> {
+                            try {
+                                return restTemplate.getForObject(recompensaServiceUrl + "/recompensas/" + rid, RecompensaDTO.class);
+                            } catch (Exception e) { return null; }
+                        })
+                        .filter(java.util.Objects::nonNull)
                         .collect(Collectors.toList());
 
-        // Buscar detalhes do usuário criador
-        UsuarioDTO usuario = restTemplate.getForObject(usuarioServiceUrl + "/usuarios/" + campanha.getId(), UsuarioDTO.class);
+        // 4. Usuário com proteção e correção de ID
+        UsuarioDTO usuario;
+        try {
+            usuario = restTemplate.getForObject(usuarioServiceUrl + "/usuarios/" + campanha.getIdCriador(), UsuarioDTO.class);
+        } catch (Exception e) {
+            usuario = new UsuarioDTO();
+            usuario.setNome("Desconhecido (Erro ao buscar)");
+        }
 
-        // Montar objeto DTO completo para resposta
         CampanhaDetalhadaDTO dto = new CampanhaDetalhadaDTO(
-                campanha.getId(),
-                campanha.getIdCriador(),
-                campanha.getTitulo(),
-                campanha.getDescricao(),
-                campanha.getMeta(),
-                campanha.getValorArrecadado(),
-                campanha.getDataCriacao(),
-                campanha.getDataEncerramento(),
-                campanha.getStatus(),
-                comentarios,
-                pagamentos,
-                recompensas,
-                usuario
+                campanha.getId(), campanha.getIdCriador(), campanha.getTitulo(), campanha.getDescricao(),
+                campanha.getMeta(), campanha.getValorArrecadado(), campanha.getDataCriacao(),
+                campanha.getDataEncerramento(), campanha.getStatus(),
+                comentarios, pagamentos, recompensas, usuario
         );
 
         return ResponseEntity.ok(dto);

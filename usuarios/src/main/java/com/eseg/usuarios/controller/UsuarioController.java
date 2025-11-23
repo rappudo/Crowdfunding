@@ -52,25 +52,45 @@ public class UsuarioController {
         // Buscar detalhes das campanhas - como List<CampanhaDTO>
         List<CampanhaDTO> campanhas = usuario.getIdCampanhasCriadas() == null ? List.of() :
                 usuario.getIdCampanhasCriadas().stream()
-                        .map(cid -> restTemplate.getForObject(campanhaServiceUrl + "/campanhas/" + cid + "/resumo", CampanhaDTO.class))
+                        .map(cid -> {
+                            try {
+                                return restTemplate.getForObject(campanhaServiceUrl + "/campanhas/" + cid + "/resumo", CampanhaDTO.class);
+                            } catch (Exception e) { return null; }
+                        })
+                        .filter(java.util.Objects::nonNull)
                         .collect(Collectors.toList());
 
         // Buscar detalhes dos comentários - como List<ComentarioDTO>
         List<ComentarioDTO> comentarios = usuario.getIdComentariosFeitos() == null ? List.of() :
                 usuario.getIdComentariosFeitos().stream()
-                        .map(cid -> restTemplate.getForObject(comentarioServiceUrl + "/comentarios/" + cid, ComentarioDTO.class))
+                        .map(coid -> {
+                            try {
+                                return restTemplate.getForObject(comentarioServiceUrl + "/comentarios/" + coid, ComentarioDTO.class);
+                            } catch (Exception e) { return null; }
+                        })
+                        .filter(java.util.Objects::nonNull)
                         .collect(Collectors.toList());
 
         // Buscar detalhes dos pagamentos - como List<PagamentoDTO>
         List<PagamentoDTO> pagamentos = usuario.getIdPagamentosFeitos() == null ? List.of() :
                 usuario.getIdPagamentosFeitos().stream()
-                        .map(pid -> restTemplate.getForObject(pagamentoServiceUrl + "/pagamentos/" + pid, PagamentoDTO.class))
+                        .map(pid -> {
+                            try {
+                                return restTemplate.getForObject(pagamentoServiceUrl + "/pagamentos/" + pid, PagamentoDTO.class);
+                            } catch (Exception e) { return null; }
+                        })
+                        .filter(java.util.Objects::nonNull)
                         .collect(Collectors.toList());
 
         // Buscar detalhes das recompensas - como List<RecompensaDTO>
         List<RecompensaDTO> recompensas = usuario.getIdRecompensasRecebidas() == null ? List.of() :
                 usuario.getIdRecompensasRecebidas().stream()
-                        .map(rid -> restTemplate.getForObject(recompensaServiceUrl + "/recompensas/" + rid, RecompensaDTO.class))
+                        .map(cid -> {
+                            try {
+                                return restTemplate.getForObject(recompensaServiceUrl + "/recompensas/" + cid, RecompensaDTO.class);
+                            } catch (Exception e) { return null; }
+                        })
+                        .filter(java.util.Objects::nonNull)
                         .collect(Collectors.toList());
 
         UsuarioDetalhadoDTO dto = new UsuarioDetalhadoDTO(
