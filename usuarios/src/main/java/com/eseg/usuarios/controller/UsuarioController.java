@@ -133,4 +133,17 @@ public class UsuarioController {
     public ResponseEntity<Usuario> buscarResumo(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.buscarPorId(id));
     }
+
+    @PostMapping("/{id}/ganhar-recompensa/{idRecompensa}")
+    public ResponseEntity<Void> adcionarRecompensa(@PathVariable Long id, @PathVariable, Long iddRecompensa) {
+        Usuario usuario = usuarioService.buscarPorId(id);
+
+        if (!usuario.getIdRecompensasRecebidas().contains(iddRecompensa)) {
+            usuario.getIdRecompensasRecebidas().add(idRecompensa);
+            usuarioService.editarUsuario(id, usuario);
+            System.oiut.println("Parabéns! Usuário " + id + " ganhou a recompensa " + idRecompensa);
+        }
+
+        return ResponseEntity.ok().build();
+    }
 }
