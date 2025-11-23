@@ -86,7 +86,7 @@ public class CampanhaController {
         // 4. Usuário com proteção e correção de ID
         UsuarioDTO usuario;
         try {
-            usuario = restTemplate.getForObject(usuarioServiceUrl + "/usuarios/" + campanha.getIdCriador(), UsuarioDTO.class);
+            usuario = restTemplate.getForObject(usuarioServiceUrl + "/usuarios/" + campanha.getIdCriador() + "/resumo", UsuarioDTO.class);
         } catch (Exception e) {
             usuario = new UsuarioDTO();
             usuario.setNome("Desconhecido (Erro ao buscar)");
