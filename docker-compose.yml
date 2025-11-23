@@ -60,5 +60,9 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - usuario.json.path=/app/data/usuarios.json
+      - campanha.service.url=http://campanha-service:8080
+      - comentario.service.url=http://comentario-service:8081
+      - pagamento.service.url=http://pagamento-service:8082
+      - recompensa.service.url=http://recompensa-service:8083
     volumes:
       - ./data/usuarios.json:/app/data/usuarios.json

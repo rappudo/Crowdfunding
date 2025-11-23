@@ -2,9 +2,11 @@ package com.eseg.recompensas.service;
 
 import com.eseg.recompensas.model.Recompensa;
 import com.eseg.recompensas.repository.RecompensaRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class RecompensaService {
 
     private final RecompensaRepository recompensaRepository;

@@ -54,7 +54,7 @@ public class CampanhaController {
         // Buscar detalhes dos comentários - como List<ComentarioDTO>
         List<ComentarioDTO> comentarios = campanha.getIdComentarios() == null ? List.of() :
                 campanha.getIdComentarios().stream()
-                        .map(cid -> restTemplate.getForObject(comentarioServiceUrl + "/comentarios/" + cid, ComentarioDTO.class))
+                        .map(cid -> restTemplate.getForObject(comentarioServiceUrl + "/comentarios/" + cid + "/resumo", ComentarioDTO.class))
                         .collect(Collectors.toList());
 
         // Buscar detalhes dos pagamentos - como List<PagamentoDTO>
@@ -111,5 +111,10 @@ public class CampanhaController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         campanhaService.deletarPorId(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/resumo")
+    public ResponseEntity<Campanha> buscarResumo(@PathVariable Long id) {
+        return ResponseEntity.ok(campanhaService.buscarPorId(id));
     }
 }

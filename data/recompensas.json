@@ -2,70 +2,70 @@
   {
     "id": 1,
     "titulo": "Camiseta Personalizada",
-    "Descricao": "Camiseta exclusiva para apoiadores da campanha.",
+    "descricao": "Camiseta exclusiva para apoiadores da campanha.",
     "valorMinimo": 50.00,
     "idCampanha": 2
   },
   {
     "id": 2,
     "titulo": "Caneca Personalizada",
-    "Descricao": "Caneca temática da campanha para os doadores.",
+    "descricao": "Caneca temática da campanha para os doadores.",
     "valorMinimo": 30.00,
     "idCampanha": 1
   },
   {
     "id": 3,
     "titulo": "Adesivo Exclusivo",
-    "Descricao": "Adesivo autocolante para mostrar apoio.",
+    "descricao": "Adesivo autocolante para mostrar apoio.",
     "valorMinimo": 10.00,
     "idCampanha": 1
   },
   {
     "id": 4,
     "titulo": "Livro Digital",
-    "Descricao": "Livro digital sobre o tema da campanha.",
+    "descricao": "Livro digital sobre o tema da campanha.",
     "valorMinimo": 80.00,
     "idCampanha": 2
   },
   {
     "id": 5,
     "titulo": "Poster Autografado",
-    "Descricao": "Poster exclusivo autografado pelos idealizadores.",
+    "descricao": "Poster exclusivo autografado pelos idealizadores.",
     "valorMinimo": 100.00,
     "idCampanha": 2
   },
   {
     "id": 6,
     "titulo": "Agradecimento Público",
-    "Descricao": "Seu nome nos agradecimentos em nosso site oficial.",
+    "descricao": "Seu nome nos agradecimentos em nosso site oficial.",
     "valorMinimo": 20.00,
     "idCampanha": 2
   },
   {
     "id": 7,
     "titulo": "Workshop Exclusivo",
-    "Descricao": "Participação em workshop exclusivo sobre o projeto.",
+    "descricao": "Participação em workshop exclusivo sobre o projeto.",
     "valorMinimo": 150.00,
     "idCampanha": 3
   },
   {
     "id": 8,
     "titulo": "Acesso Antecipado",
-    "Descricao": "Acesso antecipado a conteúdos relacionados à campanha.",
+    "descricao": "Acesso antecipado a conteúdos relacionados à campanha.",
     "valorMinimo": 60.00,
     "idCampanha": 3
   },
   {
     "id": 9,
     "titulo": "Bloco de Notas",
-    "Descricao": "Bloco de notas personalizado para os apoiadores.",
+    "descricao": "Bloco de notas personalizado para os apoiadores.",
     "valorMinimo": 40.00,
     "idCampanha": 3
   },
   {
     "id": 10,
     "titulo": "Passeio Guiado",
-    "Descricao": "Passeio guiado exclusivo relacionado à campanha cultural.",
+    "descricao": "Passeio guiado exclusivo relacionado à campanha cultural.",
     "valorMinimo": 200.00,
     "idCampanha": 3
   }
