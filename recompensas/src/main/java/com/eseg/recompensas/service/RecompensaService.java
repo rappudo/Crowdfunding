@@ -2,7 +2,9 @@ package com.eseg.recompensas.service;
 
 import com.eseg.recompensas.model.Recompensa;
 import com.eseg.recompensas.repository.RecompensaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class RecompensaService {
     //Recompensa por ID
     public Recompensa buscaPorId(Long id) {
         return recompensaRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Recompensa não encontrada"));
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada"));
     }
 
     //Criar Recompensa

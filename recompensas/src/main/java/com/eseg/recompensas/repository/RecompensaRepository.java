@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,7 +93,7 @@ public class RecompensaRepository {
             }
         }
         if (!updated) {
-            throw new RuntimeException("Recompensa com id " + id + " não encontrada.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada");
         }
         saveAll(recompensas);
     }
@@ -101,7 +103,7 @@ public class RecompensaRepository {
         List<Recompensa> recompensas = loadAll();
         boolean removed = recompensas.removeIf(p -> p.getId().equals(id));
         if (!removed) {
-            throw new RuntimeException("Recompensa com id " + id + " não encontrada");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada");
         }
         saveAll(recompensas);
     }

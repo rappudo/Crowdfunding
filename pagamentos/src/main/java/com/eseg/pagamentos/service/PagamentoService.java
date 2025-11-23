@@ -2,7 +2,9 @@ package com.eseg.pagamentos.service;
 
 import com.eseg.pagamentos.model.Pagamento;
 import com.eseg.pagamentos.repository.PagamentoRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class PagamentoService {
     // 2. Buscar pagamento por Id
     public Pagamento buscarPorId(Long id) {
         return pagamentoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada"));
     }
 
     // 3. Criar pagamento

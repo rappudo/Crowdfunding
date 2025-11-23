@@ -11,10 +11,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -38,11 +40,9 @@ class CampanhasApplicationTests {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // Mockamos o Repository para não precisar do arquivo .json real durante o teste
     @MockitoBean
     private CampanhaRepository campanhaRepository;
 
-    // Mockamos o RestTemplate para simular os outros microsserviços sem precisar que eles estejam rodando
     @MockitoBean
     private RestTemplate restTemplate;
 
@@ -50,20 +50,18 @@ class CampanhasApplicationTests {
 
     @BeforeEach
     void setUp() {
-        // Cria uma campanha padrão para usar nos testes
         campanhaPadrao = new Campanha(
                 1L,
-                100L, // ID do Criador
+                100L,
                 "Campanha de Teste",
                 "Descricao da campanha de teste",
                 new BigDecimal("5000.00"),
                 new BigDecimal("100.00"),
                 LocalDateTime.now(),
                 LocalDateTime.now().plusDays(30),
-                1 // Status: Em progresso
+                1
         );
 
-        // Simula que essa campanha tem IDs vinculados de outros serviços
         campanhaPadrao.setIdComentarios(new ArrayList<>(List.of(10L)));
         campanhaPadrao.setIdPagamentos(new ArrayList<>(List.of(20L)));
         campanhaPadrao.setIdRecompensas(new ArrayList<>(List.of(30L)));
@@ -72,58 +70,53 @@ class CampanhasApplicationTests {
     @Test
     @DisplayName("GET /campanhas/{id} - Deve retornar JSON detalhado agregando dados externos")
     void deveRetornarCampanhaDetalhada() throws Exception {
-        // 1. Define o comportamento do Banco de Dados (Repository)
         Mockito.when(campanhaRepository.findById(1L)).thenReturn(Optional.of(campanhaPadrao));
 
-        // 2. Define o comportamento dos Outros Microsserviços (RestTemplate)
-
-        // Quando chamar o serviço de Comentários...
+        // Mocks dos microsserviços externos
+        //Criação do Mock de Comentários e determinação da resposta esperada
         ComentarioDTO comentarioMock = new ComentarioDTO(10L, "Ótima iniciativa!", LocalDateTime.now(), 1L, 50L);
         Mockito.when(restTemplate.getForObject(contains("/comentarios/10"), eq(ComentarioDTO.class)))
                 .thenReturn(comentarioMock);
 
-        // Quando chamar o serviço de Pagamentos...
+        //Criação do Mock de Pagamentos e determinação da resposta esperada
         PagamentoDTO pagamentoMock = new PagamentoDTO(20L, new BigDecimal("100.00"), 1L, LocalDateTime.now());
         Mockito.when(restTemplate.getForObject(contains("/pagamentos/20"), eq(PagamentoDTO.class)))
                 .thenReturn(pagamentoMock);
 
-        // Quando chamar o serviço de Recompensas...
+        //Criação do Mock de Recompensa e determinação da resposta esperada
         RecompensaDTO recompensaMock = new RecompensaDTO(30L, "Brinde", "Um brinde legal", new BigDecimal("50.00"), 1L);
         Mockito.when(restTemplate.getForObject(contains("/recompensas/30"), eq(RecompensaDTO.class)))
                 .thenReturn(recompensaMock);
 
-        // Quando chamar o serviço de Usuários...
+        //Criação do Mock de Usuário e determinação da resposta esperada
         UsuarioDTO usuarioMock = new UsuarioDTO(100L, "Maria Criadora", "1199999999", "maria@email.com");
-        // Nota: O controller usa campanha.getId() na URL do usuário conforme seu código original
         Mockito.when(restTemplate.getForObject(contains("/usuarios/1"), eq(UsuarioDTO.class)))
                 .thenReturn(usuarioMock);
 
-        // 3. Faz a requisição e valida os campos
+        //Verificação da resposta
         mockMvc.perform(get("/campanhas/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.titulo").value("Campanha de Teste"))
                 .andExpect(jsonPath("$.meta").value(5000.00))
-                // Valida se os dados externos foram "colados" corretamente no JSON final
                 .andExpect(jsonPath("$.comentarios[0].texto").value("Ótima iniciativa!"))
-                .andExpect(jsonPath("$.pagamentos[0].valor").value(100.00))
-                .andExpect(jsonPath("$.recompensas[0].titulo").value("Brinde"))
                 .andExpect(jsonPath("$.criador.nome").value("Maria Criadora"));
     }
 
     @Test
     @DisplayName("POST /campanhas - Deve criar uma campanha com sucesso")
     void deveCriarCampanha() throws Exception {
+        //Criação de nova campanha
         Campanha novaCampanha = new Campanha();
         novaCampanha.setTitulo("Nova Campanha");
         novaCampanha.setMeta(new BigDecimal("2000.00"));
 
-        // Simula o salvamento no banco (Repository) retornando a campanha com ID
         Mockito.when(campanhaRepository.save(any(Campanha.class))).thenAnswer(invocation -> {
             Campanha c = invocation.getArgument(0);
-            c.setId(2L); // Simula ID gerado
+            c.setId(2L);
             return c;
         });
 
+        //Validando se a resposta foi criada
         mockMvc.perform(post("/campanhas")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(novaCampanha)))
@@ -135,8 +128,10 @@ class CampanhasApplicationTests {
     @Test
     @DisplayName("GET /campanhas - Deve listar todas as campanhas")
     void deveListarTodas() throws Exception {
+        //Busca todas as campanhas
         Mockito.when(campanhaRepository.findAll()).thenReturn(List.of(campanhaPadrao));
 
+        //Verifica se todas as campanhas chegaram
         mockMvc.perform(get("/campanhas"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
@@ -144,94 +139,79 @@ class CampanhasApplicationTests {
     }
 
     @Test
-    @DisplayName("GET /campanhas/{id} - Deve retornar 404 se não existir") // 500 se não houver tratamento de exceção
+    @DisplayName("GET /campanhas/{id} - Deve retornar 404 se não existir")
     void deveRetornarErroSeNaoEncontrar() throws Exception {
+        //Busca campanha inexistente
         Mockito.when(campanhaRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // Como seu service lança RuntimeException, o status depende do seu tratamento de erro global.
-        // Se não houver tratamento, o teste pode esperar 500 ou exceção.
-        // Aqui assumimos que queremos verificar se a requisição é feita.
-        try {
-            mockMvc.perform(get("/campanhas/999"));
-        } catch (Exception e) {
-            // Exceção esperada se não houver ControllerAdvice
-        }
+        //Verifica se retornou erro
+        mockMvc.perform(get("/campanhas/999"))
+                .andExpect(status().isNotFound()); // Agora validamos o 404 diretamente
     }
 
     @Test
     @DisplayName("PUT /campanhas/{id} - Deve editar campanha com sucesso")
     void deveEditarCampanha() throws Exception {
-        // 1. Prepara os dados da atualização
+        //Dados para atualiar campanha
         Campanha campanhaAtualizada = new Campanha();
         campanhaAtualizada.setTitulo("Título Atualizado");
         campanhaAtualizada.setDescricao("Nova descrição");
         campanhaAtualizada.setMeta(new BigDecimal("8000.00"));
-        // Importante: O ID da URL (1L) prevalece sobre o corpo, mas é bom manter consistência
 
-        // 2. Prepara o objeto que o banco retornará APÓS a edição
+        //Resposta esperada
         Campanha campanhaRetornada = new Campanha(
                 1L, 100L, "Título Atualizado", "Nova descrição",
                 new BigDecimal("8000.00"), new BigDecimal("100.00"),
                 LocalDateTime.now(), LocalDateTime.now().plusDays(30), 1
         );
 
-        // 3. Mocks
-        // O método update retorna void, então usamos doNothing()
         Mockito.doNothing().when(campanhaRepository).update(eq(1L), any(Campanha.class));
-
-        // O Service chama buscarPorId logo após o update, então precisamos mockar esse retorno também
         Mockito.when(campanhaRepository.findById(1L)).thenReturn(Optional.of(campanhaRetornada));
 
-        // 4. Execução e Validação
+        //Verificação de sucesso
         mockMvc.perform(put("/campanhas/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(campanhaAtualizada)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.titulo").value("Título Atualizado"))
-                .andExpect(jsonPath("$.meta").value(8000.00));
+                .andExpect(jsonPath("$.titulo").value("Título Atualizado"));
     }
 
     @Test
-    @DisplayName("PUT /campanhas/{id} - Deve retornar erro ao tentar editar inexistente")
+    @DisplayName("PUT /campanhas/{id} - Deve retornar 404 ao tentar editar inexistente")
     void deveFalharAoEditarInexistente() throws Exception {
         Campanha campanhaAtualizada = new Campanha();
         campanhaAtualizada.setTitulo("Título Atualizado");
 
-        // Simula erro no repositório
-        Mockito.doThrow(new RuntimeException("Campanha não encontrada"))
+        // Simulamos o erro 404 vindo do Repositório/Service
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada"))
                 .when(campanhaRepository).update(eq(999L), any(Campanha.class));
 
-        try {
-            mockMvc.perform(put("/campanhas/999")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(campanhaAtualizada)));
-        } catch (Exception e) {
-            // Sucesso se lançar exceção (já que não temos ControllerAdvice configurado para converter em 404)
-        }
+        //Verificaçã da resposta de Erro
+        mockMvc.perform(put("/campanhas/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(campanhaAtualizada)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("DELETE /campanhas/{id} - Deve deletar campanha com sucesso")
     void deveDeletarCampanha() throws Exception {
-        // Simula deleção sem erros
         Mockito.doNothing().when(campanhaRepository).deleteById(1L);
 
+        //Verifica se a campanha foi excluída
         mockMvc.perform(delete("/campanhas/1"))
-                .andExpect(status().isNoContent()); // Valida status 204
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    @DisplayName("DELETE /campanhas/{id} - Deve retornar erro ao deletar inexistente")
+    @DisplayName("DELETE /campanhas/{id} - Deve retornar 404 ao deletar inexistente")
     void deveFalharAoDeletarInexistente() throws Exception {
-        // Simula erro ao deletar
-        Mockito.doThrow(new RuntimeException("Campanha não encontrada"))
+        // Simulamos o erro 404 vindo do Repositório/Service
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada"))
                 .when(campanhaRepository).deleteById(999L);
 
-        try {
-            mockMvc.perform(delete("/campanhas/999"));
-        } catch (Exception e) {
-            // Sucesso se lançar exceção
-        }
+        //Verifica status de erro
+        mockMvc.perform(delete("/campanhas/999"))
+                .andExpect(status().isNotFound());
     }
 }

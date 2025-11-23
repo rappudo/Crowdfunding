@@ -1,0 +1,36 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle' # Habilita cache para o build ser mais rápido
+
+      # Passo extra de segurança: Garante que a pasta de teste existe para não quebrar o repositório JSON
+      - name: Criar diretório de dados de teste (Comentarios)
+        run: mkdir -p comentarios/src/test/java/TestData
+
+      - name: Dar permissão de execução ao Gradlew
+        run: chmod +x gradlew
+
+      # Roda o build de todo o projeto.
+      - name: Build e Testes com Gradle
+        run: ./gradlew build

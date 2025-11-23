@@ -2,7 +2,9 @@ package com.eseg.campanhas.service;
 
 import com.eseg.campanhas.model.Campanha;
 import com.eseg.campanhas.repository.CampanhaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class CampanhaService {
     // 2. Buscar campanha por Id
     public Campanha buscarPorId(Long id) {
         return campanhaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Campanha não encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada"));
     }
 
     // 3. Criar campanha

@@ -2,7 +2,9 @@ package com.eseg.usuarios.service;
 
 import com.eseg.usuarios.model.Usuario;
 import com.eseg.usuarios.repository.UsuarioRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class UsuarioService {
     // 2. Buscar usuário por Id
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada"));
     }
 
     // 3. Criar usuário

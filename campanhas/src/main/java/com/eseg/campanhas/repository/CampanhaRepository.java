@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +95,7 @@ public class CampanhaRepository {
             }
         }
         if (!updated) {
-            throw new RuntimeException("Campanha com id " + id + " não encontrada");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentário com id " + id + " não encontrado.");
         }
         saveAll(campanhas);
     }
@@ -103,7 +105,7 @@ public class CampanhaRepository {
         List<Campanha> campanhas = loadAll();
         boolean removed = campanhas.removeIf(c -> c.getId().equals(id));
         if (!removed) {
-            throw new RuntimeException("Campanha com id " + id + " não encontrada");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentário com id " + id + " não encontrado.");
         }
         saveAll(campanhas);
     }

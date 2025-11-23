@@ -2,7 +2,9 @@ package com.eseg.comentarios.service;
 
 import com.eseg.comentarios.model.Comentario;
 import com.eseg.comentarios.repository.ComentarioRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class ComentarioService {
     //2. Carregar os comentários por usuário
     public Comentario comentarioPorID(Long id){
         return comentarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comentário não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha não encontrada"));
     }
 
     //3. Criar novo Comentário

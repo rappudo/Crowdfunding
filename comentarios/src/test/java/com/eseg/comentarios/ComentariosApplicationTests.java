@@ -1,183 +1,182 @@
 package com.eseg.comentarios;
 
 import com.eseg.comentarios.model.Comentario;
+import com.eseg.comentarios.repository.ComentarioRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-// 1. Caminho do arquivo ajustado para a pasta TestData
-@TestPropertySource(properties = "comentario.json.path=src/test/java/TestData/comentarios-teste.json")
-public class ComentariosApplicationTests {
-
-    @LocalServerPort
-    private int port;
+@SpringBootTest
+@AutoConfigureMockMvc
+class ComentariosApplicationTests {
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
-    @Test
-    public void deveCriarComentario() {
-        String url = "http://localhost:" + port + "/comentarios";
+    @Autowired
+    private ObjectMapper objectMapper;
 
-        // 1. Cria o objeto
-        Comentario novoComentario = new Comentario();
-        novoComentario.setTexto("Testando a rota correta!");
-        novoComentario.setDataPostagem(LocalDateTime.now());
-        novoComentario.setIdUsuario(100L);
-        novoComentario.setIdCampanha(50L);
+    // Substituímos o repositório real por um Mock (Simulação)
+    @MockitoBean
+    private ComentarioRepository comentarioRepository;
 
-        // 2. Envia o POST
-        ResponseEntity<Comentario> respostaPost = restTemplate.postForEntity(url, novoComentario, Comentario.class);
+    // Mockamos o RestTemplate (caso você expanda a lógica no futuro)
+    @MockitoBean
+    private RestTemplate restTemplate;
 
-        // Validações da criação
-        assertEquals(HttpStatus.CREATED, respostaPost.getStatusCode());
-        assertNotNull(respostaPost.getBody());
-        assertNotNull(respostaPost.getBody().getId());
+    private Comentario comentarioPadrao;
 
-        Long idGerado = respostaPost.getBody().getId();
-
-        // 3. Busca pelo ID (GET)
-        String urlBusca = url + "/" + idGerado;
-        ResponseEntity<Comentario> respostaGet = restTemplate.getForEntity(urlBusca, Comentario.class);
-
-        // Validações da busca
-        assertEquals(HttpStatus.OK, respostaGet.getStatusCode());
-        assertEquals("Testando a rota correta!", respostaGet.getBody().getTexto());
+    @BeforeEach
+    void setUp() {
+        // Objeto padrão para ser usado nos testes
+        comentarioPadrao = new Comentario(
+                1L,
+                "Texto padrão de teste",
+                LocalDateTime.now(),
+                50L, // idCampanha
+                100L // idUsuario
+        );
     }
 
     @Test
-    public void deveConsultarComentario() {
-        String url = "http://localhost:" + port + "/comentarios";
-
-        // 1. Cria o objeto
+    @DisplayName("POST /comentarios - Deve criar um comentário com sucesso")
+    void deveCriarComentario() throws Exception {
+        // Criação de um comentario
         Comentario novoComentario = new Comentario();
-        novoComentario.setTexto("Testando a rota correta!");
-        novoComentario.setDataPostagem(LocalDateTime.now());
+        novoComentario.setTexto("Testando criação Mockada");
         novoComentario.setIdUsuario(100L);
         novoComentario.setIdCampanha(50L);
 
-        // 2. Envia o POST
-        ResponseEntity<Comentario> respostaPost = restTemplate.postForEntity(url, novoComentario, Comentario.class);
+        Mockito.when(comentarioRepository.save(any(Comentario.class))).thenAnswer(invocation -> {
+            Comentario c = invocation.getArgument(0);
+            c.setId(1L);
+            return c;
+        });
 
-        Long idGerado = respostaPost.getBody().getId();
-
-        // 3. Busca pelo ID (GET)
-        String urlBusca = url + "/" + idGerado;
-        ResponseEntity<Comentario> respostaGet = restTemplate.getForEntity(urlBusca, Comentario.class);
-
-        // Validações da busca
-        assertEquals(HttpStatus.OK, respostaGet.getStatusCode());
-        assertEquals("Testando a rota correta!", respostaGet.getBody().getTexto());
+        // Verifica se o comentário foi criado corretamente
+        mockMvc.perform(post("/comentarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(novoComentario)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.texto").value("Testando criação Mockada"));
     }
 
-    // Adicionei o atributo 'name' para facilitar a leitura na aba de execução dos testes
-    @ParameterizedTest(name = "Teste {index}: Criando comentário \"{0}\" para Usuario {1}")
+    @Test
+    @DisplayName("GET /comentarios/{id} - Deve buscar comentário por ID")
+    void deveConsultarComentario() throws Exception {
+        // Busca comentário por id
+        Mockito.when(comentarioRepository.findById(1L)).thenReturn(Optional.of(comentarioPadrao));
+
+        // Verifica se a resposta esperada está correta
+        mockMvc.perform(get("/comentarios/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.texto").value("Texto padrão de teste"))
+                .andExpect(jsonPath("$.idUsuario").value(100));
+    }
+
+    @ParameterizedTest(name = "Teste {index}: Criando comentário \"{0}\"")
     @CsvSource({
-            "Adorei o projeto!, 10, 1",           // Caso 1: Texto normal
-            "Vou doar 100 reais agora., 20, 2",   // Caso 2: Texto com números
-            "#Sucesso @Time, 99, 5"               // Caso 3: Caracteres especiais
+            "Adorei o projeto!, 10, 1",
+            "Vou doar 100 reais agora., 20, 2",
+            "#Sucesso @Time, 99, 5"
     })
-    public void deveCriarComentariosComDadosVariados(String textoEntrada, Long idUsuarioEntrada, Long idCampanhaEntrada) {
-        String url = "http://localhost:" + port + "/comentarios";
+    void deveCriarComentariosComDadosVariados(String textoEntrada, Long idUsuarioEntrada, Long idCampanhaEntrada) throws Exception {
+        // Comentarios com valores parametrizados
+        Comentario input = new Comentario();
+        input.setTexto(textoEntrada);
+        input.setIdUsuario(idUsuarioEntrada);
+        input.setIdCampanha(idCampanhaEntrada);
 
-        // 1. Prepara o objeto
-        Comentario novoComentario = new Comentario();
-        novoComentario.setTexto(textoEntrada);
-        novoComentario.setIdUsuario(idUsuarioEntrada);
-        novoComentario.setIdCampanha(idCampanhaEntrada);
-        novoComentario.setDataPostagem(LocalDateTime.now());
+        Mockito.when(comentarioRepository.save(any(Comentario.class))).thenAnswer(invocation -> {
+            Comentario c = invocation.getArgument(0);
+            c.setId(99L);
+            return c;
+        });
 
-        // 2. Envia o POST
-        ResponseEntity<Comentario> resposta = restTemplate.postForEntity(url, novoComentario, Comentario.class);
-
-        // 3. Validações
-        assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
-        assertNotNull(resposta.getBody().getId());
-
-        assertEquals(textoEntrada, resposta.getBody().getTexto());
-        assertEquals(idUsuarioEntrada, resposta.getBody().getIdUsuario());
-        assertEquals(idCampanhaEntrada, resposta.getBody().getIdCampanha());
+        // Verifica se a criação de Comentários ocorreu correntamente
+        mockMvc.perform(post("/comentarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.texto").value(textoEntrada))
+                .andExpect(jsonPath("$.idUsuario").value(idUsuarioEntrada));
     }
 
     @Test
-    public void deveAtualizarComentario() {
-        String url = "http://localhost:" + port + "/comentarios";
+    @DisplayName("PUT /comentarios/{id} - Deve atualizar comentário")
+    void deveAtualizarComentario() throws Exception {
+        // Dados da atualização
+        Comentario atualizado = new Comentario();
+        atualizado.setTexto("Texto Editado com Sucesso");
 
-        // 1. CRIAÇÃO (Setup)
-        Comentario comentarioOriginal = new Comentario();
-        comentarioOriginal.setTexto("Texto Original");
-        comentarioOriginal.setDataPostagem(LocalDateTime.now());
-        comentarioOriginal.setIdUsuario(1L);
-        comentarioOriginal.setIdCampanha(1L);
+        // Objeto que o banco "retornaria" após a edição (para o método buscarPorId que o service chama)
+        Comentario comentarioPosEdicao = new Comentario(1L, "Texto Editado com Sucesso", LocalDateTime.now(), 50L, 100L);
 
-        ResponseEntity<Comentario> respostaPost = restTemplate.postForEntity(url, comentarioOriginal, Comentario.class);
-        Long idGerado = respostaPost.getBody().getId();
+        Mockito.doNothing().when(comentarioRepository).update(eq(1L), any(Comentario.class));
 
-        // 2. ATUALIZAÇÃO (Ação)
-        // Pega o objeto retornado (que já tem ID) e muda o texto
-        Comentario comentarioParaAtualizar = respostaPost.getBody();
-        comentarioParaAtualizar.setTexto("Texto Editado com Sucesso");
+        // Busca o Comentário logo após atualizar
+        Mockito.when(comentarioRepository.findById(1L)).thenReturn(Optional.of(comentarioPosEdicao));
 
-        // Usamos 'exchange' com HttpMethod.PUT
-        String urlUpdate = url + "/" + idGerado;
-        ResponseEntity<Comentario> respostaPut = restTemplate.exchange(
-                urlUpdate,
-                HttpMethod.PUT,
-                new HttpEntity<>(comentarioParaAtualizar),
-                Comentario.class
-        );
-
-        // 3. VALIDAÇÃO
-        assertEquals(HttpStatus.OK, respostaPut.getStatusCode());
-        assertEquals("Texto Editado com Sucesso", respostaPut.getBody().getTexto());
-
-        // Validação Extra: Buscar novamente (GET) para garantir que persistiu
-        ResponseEntity<Comentario> respostaGet = restTemplate.getForEntity(urlUpdate, Comentario.class);
-        assertEquals("Texto Editado com Sucesso", respostaGet.getBody().getTexto());
+        // Verifica se a alteração ocorreu corretamente
+        mockMvc.perform(put("/comentarios/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(atualizado)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.texto").value("Texto Editado com Sucesso"));
     }
 
     @Test
-    public void deveDeletarComentario() {
-        String url = "http://localhost:" + port + "/comentarios";
+    @DisplayName("DELETE /comentarios/{id} - Deve deletar comentário")
+    void deveDeletarComentario() throws Exception {
+        Mockito.doNothing().when(comentarioRepository).deleteById(1L);
 
-        // 1. Cria comentário
-        Comentario comentarioParaDeletar = new Comentario();
-        comentarioParaDeletar.setTexto("Vou ser deletado em breve");
-        comentarioParaDeletar.setDataPostagem(LocalDateTime.now());
+        mockMvc.perform(delete("/comentarios/1"))
+                .andExpect(status().isNoContent()); // Espera 204
+    }
 
-        ResponseEntity<Comentario> respostaPost = restTemplate.postForEntity(url, comentarioParaDeletar, Comentario.class);
-        Long idGerado = respostaPost.getBody().getId();
+    @Test
+    @DisplayName("GET /comentarios/{id} - Deve retornar 404 se não existir")
+    void deveRetornar404SeNaoEncontrar() throws Exception {
+        // Simulamos que o repositório não encontrou nada (Optional vazio)
+        Mockito.when(comentarioRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // 2. Deleta (Deve funcionar)
-        String urlDelete = url + "/" + idGerado;
-        ResponseEntity<Void> respostaDelete = restTemplate.exchange(
-                urlDelete,
-                HttpMethod.DELETE,
-                null,
-                Void.class
-        );
-        assertEquals(HttpStatus.NO_CONTENT, respostaDelete.getStatusCode());
+        // Verifica o status de erro
+        mockMvc.perform(get("/comentarios/999"))
+                .andExpect(status().isNotFound());
+    }
 
-        // 3. Tenta buscar de novo
-        // ALTERAÇÃO AQUI: Como você não tratou o erro no Controller, o Spring retorna 500.
-        // Mudamos a expectativa do teste para aceitar 500 como "correto" neste cenário.
-        ResponseEntity<Comentario> respostaGet = restTemplate.getForEntity(urlDelete, Comentario.class);
+    @Test
+    @DisplayName("DELETE /comentarios/{id} - Deve retornar 404 ao deletar inexistente")
+    void deveRetornar404AoDeletarInexistente() throws Exception {
+        // Simulamos o erro que configuramos no Repository
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND))
+                .when(comentarioRepository).deleteById(999L);
 
-        // Verifica se deu erro interno (sinal que a exceção "Não encontrado" explodiu lá no servidor)
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, respostaGet.getStatusCode());
+        // Verifica o status de erro
+        mockMvc.perform(delete("/comentarios/999"))
+                .andExpect(status().isNotFound());
     }
 }
