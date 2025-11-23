@@ -1,20 +1,17 @@
-name: Java CI with Gradle
+name: Crowdfunding CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
+    branches: [ "main", "master" ]
 
 jobs:
-  build:
+  # JOB 1: Compilação Java e Testes Unitários
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout do código
+      - name: Checkout do Código
         uses: actions/checkout@v4
 
       - name: Configurar JDK 21
@@ -22,15 +19,29 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-          cache: 'gradle' # Habilita cache para o build ser mais rápido
+          cache: gradle
 
-      # Passo extra de segurança: Garante que a pasta de teste existe para não quebrar o repositório JSON
-      - name: Criar diretório de dados de teste (Comentarios)
-        run: mkdir -p comentarios/src/test/java/TestData
-
-      - name: Dar permissão de execução ao Gradlew
+      - name: Permissão de Execução do Gradle
         run: chmod +x gradlew
 
-      # Roda o build de todo o projeto.
-      - name: Build e Testes com Gradle
-        run: ./gradlew build
+      - name: Build e Testes com Gradle (Todos os serviços)
+        # O comando 'build' roda 'assemble' e 'check' (testes)
+        # Como temos um settings.gradle.kts na raiz, ele testa todos os módulos
+        run: ./gradlew build --no-daemon
+
+  # JOB 2: Verificar Build do Docker (Executa em paralelo para cada serviço)
+  docker-build-check:
+    needs: build-and-test # Só roda se os testes Java passarem
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [campanhas, comentarios, pagamentos, recompensas, usuarios]
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Build da Imagem Docker (${{ matrix.service }})
+        # Entra na pasta do serviço e roda o build usando o Dockerfile local
+        run: |
+          cd ${{ matrix.service }}
+          docker build . --file Dockerfile --tag crowdfunding-${{ matrix.service }}:latest

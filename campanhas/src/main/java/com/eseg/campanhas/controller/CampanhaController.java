@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/campanhas")
+@CrossOrigin("*")
 public class CampanhaController {
 
     private final CampanhaService campanhaService;
