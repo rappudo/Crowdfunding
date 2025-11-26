@@ -130,7 +130,7 @@ public class CampanhaController {
         return ResponseEntity.ok(campanhaService.buscarPorId(id));
     }
 
-    @PostMapping{"/{id}/doar"}
+    @PostMapping("/{id}/doar")
     public ResponseEntity<Campanha> processarDoacao(@PathVariable Long id, @RequestBody BigDecimal valorDoado) {
         Campanha campanha = campanhaService.buscarPorId(id);
 

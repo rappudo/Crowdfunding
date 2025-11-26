@@ -1,0 +1,14 @@
+[ {
+  "id" : 1,
+  "idCriador" : 5,
+  "titulo" : "Projeto Tech na Comunidade",
+  "descricao" : "Levar educação em tecnologia para jovens.",
+  "meta" : 25000.00,
+  "valorArrecadado" : 0.00,
+  "dataCriacao" : [ 2025, 11, 26, 10, 30 ],
+  "dataEncerramento" : [ 2026, 6, 30, 23, 59, 59 ],
+  "status" : 1,
+  "idComentarios" : null,
+  "idPagamentos" : null,
+  "idRecompensas" : null
+} ]

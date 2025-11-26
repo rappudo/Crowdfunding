@@ -8,12 +8,13 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,24 @@ public class CampanhaRepository {
 
     @PostConstruct
     public void init() {
+        // Garante que o diretório existe
+        try {
+            Path path = Paths.get(jsonPath);
+            Path parentDir = path.getParent();
+            if (parentDir != null && !Files.exists(parentDir)) {
+                Files.createDirectories(parentDir);
+                System.out.println("Diretório criado: " + parentDir);
+            }
+            
+            // Cria arquivo vazio se não existir
+            if (!Files.exists(path)) {
+                mapper.writeValue(path.toFile(), new ArrayList<Campanha>());
+                System.out.println("Arquivo JSON criado: " + jsonPath);
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao inicializar arquivo JSON: " + e.getMessage());
+        }
+        
         initializeIdGenerator();
     }
 
@@ -38,16 +57,29 @@ public class CampanhaRepository {
         List<Campanha> campanhas = loadAll();
         long maxId = campanhas.stream().mapToLong(Campanha::getId).max().orElse(0L);
         idGenerator.set(maxId + 1);
+        System.out.println("ID Generator iniciado em: " + idGenerator.get());
     }
 
     private List<Campanha> loadAll() {
         try {
             File file = new File(jsonPath);
-            if (!file.exists() || file.length() == 0) return new ArrayList<>();
+            
+            if (!file.exists()) {
+                System.out.println("Arquivo não existe, retornando lista vazia");
+                return new ArrayList<>();
+            }
+            
+            if (file.length() == 0) {
+                System.out.println("Arquivo vazio, retornando lista vazia");
+                return new ArrayList<>();
+            }
+            
             List<Campanha> campanhas = mapper.readValue(file, new TypeReference<List<Campanha>>(){});
-            System.out.println("DEBUG: JSON lido com " + campanhas.size() + " campanhas");
+            System.out.println("JSON lido com " + campanhas.size() + " campanhas");
             return campanhas;
+            
         } catch (IOException e) {
+            System.err.println("Erro ao ler JSON: " + e.getMessage());
             e.printStackTrace();
             return new ArrayList<>();
         }
@@ -55,11 +87,22 @@ public class CampanhaRepository {
 
     private void saveAll(List<Campanha> campanhas) {
         try {
-            Resource resource = new ClassPathResource(jsonPath.replace("classpath:", ""));
-            File file = resource.getFile();
-            mapper.writeValue(file, campanhas);
+            File file = new File(jsonPath);
+            
+            // Garante que o diretório pai existe
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+                System.out.println("Diretório criado: " + parentDir.getAbsolutePath());
+            }
+            
+            mapper.writerWithDefaultPrettyPrinter().writeValue(file, campanhas);
+            System.out.println("JSON salvo com " + campanhas.size() + " campanhas em: " + file.getAbsolutePath());
+            
         } catch (IOException e) {
-            throw new RuntimeException("Erro ao salvar campanhas", e);
+            System.err.println("Erro ao salvar JSON: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Erro ao salvar campanhas: " + e.getMessage(), e);
         }
     }
 
@@ -95,7 +138,7 @@ public class CampanhaRepository {
             }
         }
         if (!updated) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentário com id " + id + " não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha com id " + id + " não encontrada.");
         }
         saveAll(campanhas);
     }
@@ -105,7 +148,7 @@ public class CampanhaRepository {
         List<Campanha> campanhas = loadAll();
         boolean removed = campanhas.removeIf(c -> c.getId().equals(id));
         if (!removed) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentário com id " + id + " não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha com id " + id + " não encontrada.");
         }
         saveAll(campanhas);
     }
