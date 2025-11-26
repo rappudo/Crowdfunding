@@ -586,26 +586,6 @@ cd campanhas
 # Gerar relatório de cobertura
 ./gradlew test jacocoTestReport
 ```
-
----
-
-## 🤝 Contribuindo
-
-Contribuições são bem-vindas! Para contribuir:
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
-
-### Padrões de Código
-
-- Siga as convenções do Java (CamelCase para classes, camelCase para métodos)
-- Escreva testes unitários para novas funcionalidades
-- Documente métodos públicos com Javadoc
-- Mantenha commits pequenos e descritivos
-
 ---
 
 ## 📄 Licença
@@ -620,13 +600,6 @@ Este projeto é de código aberto para fins educacionais.
 
 **Repositório:** [github.com/rappudo/Crowdfunding](https://github.com/rappudo/Crowdfunding)
 
----
-
-## 📞 Suporte
-
-- 🐛 **Encontrou um bug?** Abra uma [issue](https://github.com/rappudo/Crowdfunding/issues)
-- 💡 **Tem uma sugestão?** Abra uma [discussion](https://github.com/rappudo/Crowdfunding/discussions)
-- 📧 **Contato direto:** Através do GitHub
 
 ---
 
@@ -643,5 +616,3 @@ Este projeto demonstra conceitos fundamentais de:
 - Boas práticas de desenvolvimento Java/Spring Boot
 
 ---
-
-⭐ **Se este projeto foi útil, considere dar uma estrela no GitHub!**
