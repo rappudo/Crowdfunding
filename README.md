@@ -41,21 +41,6 @@ Esta é uma plataforma simplificada de crowdfunding distribuída em múltiplos m
 
 ---
 
-## 🏗️ Arquitetura
-
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   Usuários   │     │  Campanhas   │     │  Pagamentos  │
-│   :8084      │◄───►│   :8080      │◄───►│   :8082      │
-└──────────────┘     └──────────────┘     └──────────────┘
-                            │
-                            ▼
-                     ┌──────────────┐     ┌──────────────┐
-                     │ Comentários  │     │ Recompensas  │
-                     │   :8081      │     │   :8083      │
-                     └──────────────┘     └──────────────┘
-```
-
 Cada microsserviço é **independente**, possui sua própria base de dados e pode ser desenvolvido, testado e deployado separadamente.
 
 ---
@@ -74,14 +59,14 @@ Cada microsserviço é **independente**, possui sua própria base de dados e pod
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Backend:** Java 17, Spring Boot 3.x, Spring Web
+- **Backend:** Java 21, Spring Boot 3.5.7, Spring Web
 - **Build Tool:** Gradle (Kotlin DSL)
-- **Persistência:** Arquivos JSON (dev) / PostgreSQL (prod)
+- **Persistência:** Arquivos JSON (dev) 
 - **Containerização:** Docker, Docker Compose
 - **CI/CD:** GitHub Actions
 - **Cloud:** Render.com
 - **Testes:** JUnit 5, Spring Boot Test
-- **Documentação:** Markdown, OpenAPI (futuro)
+- **Documentação:** Markdown
 
 ---
 
@@ -91,7 +76,7 @@ Cada microsserviço é **independente**, possui sua própria base de dados e pod
 
 Antes de começar, certifique-se de ter instalado:
 
-- **Java 17+** - [Download](https://www.oracle.com/java/technologies/downloads/)
+- **Java 21+** - [Download](https://www.oracle.com/java/technologies/downloads/)
 - **Docker** - [Download](https://www.docker.com/get-started)
 - **Docker Compose** - Geralmente vem com Docker Desktop
 - **Git** - [Download](https://git-scm.com/downloads)
