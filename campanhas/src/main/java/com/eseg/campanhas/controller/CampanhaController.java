@@ -129,24 +129,4 @@ public class CampanhaController {
     public ResponseEntity<Campanha> buscarResumo(@PathVariable Long id) {
         return ResponseEntity.ok(campanhaService.buscarPorId(id));
     }
-
-    @PostMapping("/{id}/doar")
-    public ResponseEntity<Campanha> processarDoacao(@PathVariable Long id, @RequestBody BigDecimal valorDoado) {
-        Campanha campanha = campanhaService.buscarPorId(id);
-
-        if (campanha.getStatus() == 0) {
-          return ResponseEntity.badRequest().build();
-        }
-
-        BigDecimal novoValor = campanha.getValorArrecadado().add(valorDoado);
-        campanha.setValorArrecadado(novoValor);
-
-        if (novoValor.compareTo(campanha.getMeta()) >= 0) {
-            campanha.setStatus(0);
-            System.out.println("META ATINGIDA! Campanha " + id + " encerrada.");
-        }
-
-        campanhaService.editarCampanha(id, campanha);
-        return ResponseEntity.ok(campanha);
-    }
 }
