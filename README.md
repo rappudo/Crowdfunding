@@ -433,8 +433,6 @@ curl -X POST https://pagamentos-4e9r.onrender.com/pagamentos \
     "idUsuario": 1,
     "idCampanha": 1,
     "valor": 500.00,
-    "metodoPagamento": "cartao_credito",
-    "statusPagamento": "concluido",
     "dataPagamento": "2025-11-26T14:30:00"
   }'
 ```
@@ -447,8 +445,6 @@ curl -X PUT https://pagamentos-4e9r.onrender.com/pagamentos/1 \
     "idUsuario": 1,
     "idCampanha": 1,
     "valor": 500.00,
-    "metodoPagamento": "cartao_credito",
-    "statusPagamento": "estornado",
     "dataPagamento": "2025-11-26T14:30:00"
   }'
 ```
