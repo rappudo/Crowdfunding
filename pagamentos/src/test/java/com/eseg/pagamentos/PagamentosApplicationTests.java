@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -40,6 +41,9 @@ class PagamentosApplicationTests {
     @MockitoBean
     private PagamentoRepository pagamentoRepository;
 
+    @MockitoBean
+    private RestTemplate restTemplate;
+
     private Pagamento pagamentoPadrao;
 
     @BeforeEach
@@ -49,6 +53,7 @@ class PagamentosApplicationTests {
                 1L,
                 new BigDecimal("150.00"),
                 10L, // ID da Campanha
+                1L,
                 LocalDateTime.now()
         );
     }
@@ -129,7 +134,7 @@ class PagamentosApplicationTests {
         atualizacao.setIdCampanha(10L);
 
         // Resposta esperada
-        Pagamento pagamentoEditado = new Pagamento(1L, new BigDecimal("300.00"), 10L, LocalDateTime.now());
+        Pagamento pagamentoEditado = new Pagamento(1L, new BigDecimal("300.00"), 10L, 1L, LocalDateTime.now());
 
         Mockito.doNothing().when(pagamentoRepository).update(eq(1L), any(Pagamento.class));
         Mockito.when(pagamentoRepository.findById(1L)).thenReturn(Optional.of(pagamentoEditado));
