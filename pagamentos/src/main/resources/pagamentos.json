@@ -3,60 +3,70 @@
     "id": 1,
     "valor": 100.50,
     "idCampanha": 2,
+    "idUsuario": 1,
     "dataPagamento": "2025-01-15T10:30:00"
   },
   {
     "id": 2,
     "valor": 200.00,
     "idCampanha": 1,
+    "idUsuario": 2,
     "dataPagamento": "2025-01-20T14:20:00"
   },
   {
     "id": 3,
     "valor": 150.25,
     "idCampanha": 1,
+    "idUsuario": 3,
     "dataPagamento": "2025-02-10T09:45:00"
   },
   {
     "id": 4,
     "valor": 150.00,
     "idCampanha": 2,
+    "idUsuario": 4,
     "dataPagamento": "2025-02-10T11:00:00"
   },
   {
     "id": 5,
     "valor": 175.00,
     "idCampanha": 2,
+    "idUsuario": 5,
     "dataPagamento": "2025-02-15T16:30:00"
   },
   {
     "id": 6,
     "valor": 500.00,
     "idCampanha": 2,
+    "idUsuario": 6,
     "dataPagamento": "2025-03-05T08:00:00"
   },
   {
     "id": 7,
     "valor": 250.00,
     "idCampanha": 3,
+    "idUsuario": 7,
     "dataPagamento": "2025-03-10T12:00:00"
   },
   {
     "id": 8,
     "valor": 300.00,
     "idCampanha": 3,
+    "idUsuario": 8,
     "dataPagamento": "2025-03-15T14:00:00"
   },
   {
     "id": 9,
     "valor": 80.00,
     "idCampanha": 3,
+    "idUsuario": 9,
     "dataPagamento": "2025-03-20T10:45:00"
   },
   {
     "id": 10,
     "valor": 250.00,
     "idCampanha": 3,
+    "idUsuario": 10,
     "dataPagamento": "2025-03-25T09:30:00"
   }
 ]

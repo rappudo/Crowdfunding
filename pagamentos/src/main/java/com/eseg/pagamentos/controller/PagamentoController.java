@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.List;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/pagamentos")
@@ -67,7 +67,7 @@ public class PagamentoController {
 
         try {
             RecompensaDTO[] todasRecompensas = restTemplate.getForObject(
-                recompensServiceUrl + "/recompensas",
+                recompensaServiceUrl + "/recompensas",
                 RecompensaDTO[].class
                 );
 
@@ -80,7 +80,7 @@ public class PagamentoController {
                         Long idUsuario = novoPagamento.getIdUsuario();
 
                         restTemplate.postForEntity(
-                            usuarioServiceUrl + "/usuarios/" + idUsuario + "/ganhar-recompensa/" + recompensGanha.getId(),
+                            usuarioServiceUrl + "/usuarios/" + idUsuario + "/ganhar-recompensa/" + recompensaGanha.getId(),
                             null,
                             Void.class
                         );
