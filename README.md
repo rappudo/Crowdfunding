@@ -1,152 +1,618 @@
-# Projeto Crowdfunding com Microsserviços
+# 🚀 Plataforma de Crowdfunding - Microsserviços
 
-## Objetivo do Projeto
+> Plataforma distribuída de crowdfunding construída com arquitetura de microsserviços, Spring Boot, Docker e CI/CD via GitHub Actions.
 
-Este projeto é uma plataforma simplificada de crowdfunding distribuída em múltiplos microsserviços separados, com um exemplo prático da arquitetura moderna microserviços, utilizando:
+[![Build Status](https://github.com/rappudo/Crowdfunding/actions/workflows/ci.yml/badge.svg)](https://github.com/rappudo/Crowdfunding/actions)
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 
-- Microsserviços segregados por responsabilidade (ex: pagamentos, usuários, campanhas).
-- Comunicação via APIs RESTful entre os microsserviços.
-- Empacotamento e execução em containers Docker individuais.
-- Testes unitários para garantir qualidade do código.
-- Integração Contínua (CI) configurada via GitHub Actions para build e testes automáticos.
-- Persistência simples via arquivos JSON para armazenar os dados das campanhas.
-- Estrutura organizada para facilitar manutenção e entendimento.
+---
 
-Este trabalho visa demonstrar a separação clara dos serviços, garantir código testável e automatizar rotinas de build e deploy.
+## 📋 Índice
 
-***
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Arquitetura](#arquitetura)
+- [Serviços Disponíveis](#serviços-disponíveis)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Começando](#começando)
+  - [Pré-requisitos](#pré-requisitos)
+  - [Executando Localmente com Gradle](#executando-localmente-com-gradle)
+  - [Executando com Docker Compose](#executando-com-docker-compose)
+- [Testando na Produção (Render)](#testando-na-produção-render)
+- [Exemplos de Requisições](#exemplos-de-requisições)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [CI/CD](#cicd)
+- [Contribuindo](#contribuindo)
 
-## Estrutura do Projeto
+---
 
-Cada microsserviço tem sua própria pasta com:
+## 🎯 Sobre o Projeto
 
-- Código fonte Java Spring Boot com Gradle.
-- Dockerfile para geração da imagem container.
-- Testes unitários automatizados.
-- README específico com detalhes do serviço (endpoints, regras, execuções).
-- Arquivos de configuração do Gradle.
+Esta é uma plataforma simplificada de crowdfunding distribuída em múltiplos microsserviços independentes. O projeto demonstra:
 
-A raiz do projeto contém:
+- ✅ **Arquitetura de Microsserviços** - Cada serviço tem responsabilidade única e bem definida
+- ✅ **Comunicação via REST APIs** - Integração entre serviços usando HTTP/JSON
+- ✅ **Containerização com Docker** - Cada microsserviço roda em seu próprio container
+- ✅ **Testes Automatizados** - Testes unitários garantindo qualidade do código
+- ✅ **CI/CD com GitHub Actions** - Build e testes automáticos a cada push
+- ✅ **Persistência Simples** - Dados armazenados em arquivos JSON (desenvolvimento) ou banco de dados (produção)
+- ✅ **Deploy na Nuvem** - Serviços hospedados no Render.com com alta disponibilidade
 
-- `settings.gradle.kts` e `build.gradle.kts` globais para multi-projeto.
-- Pipelines GitHub Actions para CI.
-- Pasta `exemplos-requests` com exemplos de chamadas REST via `curl` e `.http`.
-- README global (este arquivo).
+---
 
-***
+## 🏗️ Arquitetura
 
-## Como Rodar Localmente Cada Microsserviço
-
-1. Clone este repositório.
-
-2. Navegue até a pasta do microsserviço que deseja executar (exemplo: `campanhas`).
-
-3. Compile o projeto e rode os testes com:
-
-```bash
-./gradlew clean build
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   Usuários   │     │  Campanhas   │     │  Pagamentos  │
+│   :8084      │◄───►│   :8080      │◄───►│   :8082      │
+└──────────────┘     └──────────────┘     └──────────────┘
+                            │
+                            ▼
+                     ┌──────────────┐     ┌──────────────┐
+                     │ Comentários  │     │ Recompensas  │
+                     │   :8081      │     │   :8083      │
+                     └──────────────┘     └──────────────┘
 ```
 
-4. Rode o microsserviço localmente com:
+Cada microsserviço é **independente**, possui sua própria base de dados e pode ser desenvolvido, testado e deployado separadamente.
+
+---
+
+## 🌐 Serviços Disponíveis
+
+| Serviço | Descrição | Porta Local | URL Produção (Render) |
+|---------|-----------|-------------|----------------------|
+| **Campanhas** | Gerenciamento de campanhas de financiamento | 8080 | [crowdfunding-b7hh.onrender.com](https://crowdfunding-b7hh.onrender.com) |
+| **Comentários** | Sistema de comentários nas campanhas | 8081 | [comentario-ebzk.onrender.com](https://comentario-ebzk.onrender.com) |
+| **Pagamentos** | Processamento de doações e pagamentos | 8082 | [pagamentos-4e9r.onrender.com](https://pagamentos-4e9r.onrender.com) |
+| **Recompensas** | Gestão de recompensas para apoiadores | 8083 | [recompensas.onrender.com](https://recompensas.onrender.com) |
+| **Usuários** | Autenticação e perfis de usuários | 8084 | [usuarios-lcvs.onrender.com](https://usuarios-lcvs.onrender.com) |
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Backend:** Java 17, Spring Boot 3.x, Spring Web
+- **Build Tool:** Gradle (Kotlin DSL)
+- **Persistência:** Arquivos JSON (dev) / PostgreSQL (prod)
+- **Containerização:** Docker, Docker Compose
+- **CI/CD:** GitHub Actions
+- **Cloud:** Render.com
+- **Testes:** JUnit 5, Spring Boot Test
+- **Documentação:** Markdown, OpenAPI (futuro)
+
+---
+
+## 🚀 Começando
+
+### Pré-requisitos
+
+Antes de começar, certifique-se de ter instalado:
+
+- **Java 17+** - [Download](https://www.oracle.com/java/technologies/downloads/)
+- **Docker** - [Download](https://www.docker.com/get-started)
+- **Docker Compose** - Geralmente vem com Docker Desktop
+- **Git** - [Download](https://git-scm.com/downloads)
+
+Verifique as instalações:
+```bash
+java -version    # Deve mostrar Java 17+
+docker --version
+docker-compose --version
+git --version
+```
+
+---
+
+### 📦 Executando Localmente com Gradle
+
+#### 1. Clone o repositório
 
 ```bash
+git clone https://github.com/rappudo/Crowdfunding.git
+cd Crowdfunding
+```
+
+#### 2. Execute um serviço específico
+
+**Exemplo: Serviço de Campanhas**
+
+```bash
+# Navegue até a pasta do serviço
+cd campanhas
+
+# Compile o projeto e rode os testes
+./gradlew clean build
+
+# Execute o serviço
 ./gradlew bootRun
 ```
 
-Por padrão, o serviço estará disponível na porta 8080 (configure as portas se quiser rodar vários serviços ao mesmo tempo para evitar conflito).
+O serviço estará disponível em `http://localhost:8080`
 
-***
+#### 3. Rodando múltiplos serviços simultaneamente
 
-## Como Rodar Usando Docker
+Para evitar conflito de portas, você pode:
 
-1. No terminal, na pasta do microsserviço, construa a imagem Docker:
+**Opção A: Usar terminais separados e configurar portas diferentes**
 
+Terminal 1 - Campanhas (porta 8080):
 ```bash
-docker build -t servico-nome .
-```
-(substitua `servico-nome` por `servico-campanhas`, `servico-usuarios`, etc.)
-
-2. Execute o container mapeando porta local conforme desejar, ex:
-
-```bash
-docker run -p 8081:8080 servico-campanhas
+cd campanhas
+./gradlew bootRun
 ```
 
-Isso expõe o microsserviço na porta 8081 no seu host.
+Terminal 2 - Usuários (porta 8084):
+```bash
+cd usuarios
+./gradlew bootRun --args='--server.port=8084'
+```
 
-3. Verifique que o container está ativo e acessível.
+**Opção B: Usar Docker Compose (recomendado)**
 
-***
+---
 
-## Testes Unitários
+### 🐳 Executando com Docker Compose
 
-- Execute os testes unitários com:
+O Docker Compose permite rodar **todos os serviços simultaneamente** com um único comando.
+
+#### 1. Certifique-se de estar na raiz do projeto
 
 ```bash
+cd Crowdfunding
+```
+
+#### 2. Construa as imagens Docker
+
+```bash
+docker-compose build
+```
+
+Este comando irá:
+- Ler o `docker-compose.yml`
+- Construir as imagens Docker de cada microsserviço
+- Preparar a rede interna para comunicação entre serviços
+
+#### 3. Inicie todos os serviços
+
+```bash
+docker-compose up
+```
+
+Ou para rodar em background (modo detached):
+```bash
+docker-compose up -d
+```
+
+#### 4. Verifique os containers em execução
+
+```bash
+docker-compose ps
+```
+
+Saída esperada:
+```
+NAME                    STATUS    PORTS
+campanhas-service       Up        0.0.0.0:8080->8080/tcp
+usuarios-service        Up        0.0.0.0:8084->8084/tcp
+pagamentos-service      Up        0.0.0.0:8082->8082/tcp
+comentarios-service     Up        0.0.0.0:8081->8081/tcp
+recompensas-service     Up        0.0.0.0:8083->8083/tcp
+```
+
+#### 5. Visualize os logs
+
+**Todos os serviços:**
+```bash
+docker-compose logs -f
+```
+
+**Serviço específico:**
+```bash
+docker-compose logs -f campanhas
+```
+
+#### 6. Parar os serviços
+
+```bash
+docker-compose down
+```
+
+Para remover volumes e dados persistidos:
+```bash
+docker-compose down -v
+```
+
+---
+
+### 🔨 Construindo Imagens Docker Individuais
+
+Se preferir construir e rodar serviços individualmente:
+
+```bash
+# Navegue até o serviço
+cd campanhas
+
+# Construa a imagem
+docker build -t crowdfunding-campanhas:latest .
+
+# Execute o container
+docker run -p 8080:8080 \
+  -e CAMPANHA_JSON_PATH=/tmp/campanhas.json \
+  crowdfunding-campanhas:latest
+
+# Verifique se está rodando
+docker ps
+
+# Acesse os logs
+docker logs <container_id>
+```
+
+---
+
+## 🌍 Testando na Produção (Render)
+
+Todos os microsserviços estão deployados no Render e podem ser testados publicamente.
+
+### URLs Base
+
+```bash
+CAMPANHAS_URL="https://crowdfunding-b7hh.onrender.com"
+COMENTARIOS_URL="https://comentario-ebzk.onrender.com"
+PAGAMENTOS_URL="https://pagamentos-4e9r.onrender.com"
+RECOMPENSAS_URL="https://recompensas.onrender.com"
+USUARIOS_URL="https://usuarios-lcvs.onrender.com"
+```
+
+### Health Check
+
+Teste se os serviços estão online:
+
+```bash
+curl https://crowdfunding-b7hh.onrender.com/campanhas
+curl https://usuarios-lcvs.onrender.com/usuarios
+curl https://comentario-ebzk.onrender.com/comentarios
+curl https://pagamentos-4e9r.onrender.com/pagamentos
+curl https://recompensas.onrender.com/recompensas
+```
+
+⚠️ **Nota:** Serviços no Render (free tier) podem levar ~30-60 segundos para "acordar" se estiverem inativos.
+
+---
+
+## 📡 Exemplos de Requisições
+
+### 🎯 Serviço de Campanhas
+
+#### **GET** - Listar todas as campanhas
+```bash
+curl -X GET https://crowdfunding-b7hh.onrender.com/campanhas
+```
+
+#### **GET** - Buscar campanha por ID
+```bash
+curl -X GET https://crowdfunding-b7hh.onrender.com/campanhas/1
+```
+
+#### **POST** - Criar nova campanha
+```bash
+curl -X POST https://crowdfunding-b7hh.onrender.com/campanhas \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idCriador": 5,
+    "titulo": "Projeto Tech na Comunidade",
+    "descricao": "Levar educação em tecnologia e programação para jovens de comunidades periféricas.",
+    "meta": 25000.00,
+    "valorArrecadado": 0.00,
+    "dataCriacao": "2025-11-26T10:30:00",
+    "dataEncerramento": "2026-06-30T23:59:59",
+    "status": 1
+  }'
+```
+
+#### **PUT** - Atualizar campanha
+```bash
+curl -X PUT https://crowdfunding-b7hh.onrender.com/campanhas/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idCriador": 5,
+    "titulo": "Projeto Tech Atualizado",
+    "descricao": "Descrição atualizada da campanha.",
+    "meta": 30000.00,
+    "valorArrecadado": 5000.00,
+    "dataCriacao": "2025-11-26T10:30:00",
+    "dataEncerramento": "2026-12-31T23:59:59",
+    "status": 1
+  }'
+```
+
+#### **DELETE** - Remover campanha
+```bash
+curl -X DELETE https://crowdfunding-b7hh.onrender.com/campanhas/1
+```
+
+#### **POST** - Fazer doação
+```bash
+curl -X POST https://crowdfunding-b7hh.onrender.com/campanhas/1/doar \
+  -H "Content-Type: application/json" \
+  -d '500.00'
+```
+
+---
+
+### 👤 Serviço de Usuários
+
+#### **GET** - Listar todos os usuários
+```bash
+curl -X GET https://usuarios-lcvs.onrender.com/usuarios
+```
+
+#### **GET** - Buscar usuário por ID
+```bash
+curl -X GET https://usuarios-lcvs.onrender.com/usuarios/1
+```
+
+#### **POST** - Criar novo usuário
+```bash
+curl -X POST https://usuarios-lcvs.onrender.com/usuarios \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "João Silva",
+    "email": "joao.silva@email.com",
+    "senha": "senha123",
+    "dataCadastro": "2025-11-26T10:00:00"
+  }'
+```
+
+#### **PUT** - Atualizar usuário
+```bash
+curl -X PUT https://usuarios-lcvs.onrender.com/usuarios/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "João Silva Santos",
+    "email": "joao.santos@email.com",
+    "senha": "novaSenha456",
+    "dataCadastro": "2025-11-26T10:00:00"
+  }'
+```
+
+#### **DELETE** - Remover usuário
+```bash
+curl -X DELETE https://usuarios-lcvs.onrender.com/usuarios/1
+```
+
+---
+
+### 💬 Serviço de Comentários
+
+#### **GET** - Listar todos os comentários
+```bash
+curl -X GET https://comentario-ebzk.onrender.com/comentarios
+```
+
+#### **GET** - Buscar comentário por ID
+```bash
+curl -X GET https://comentario-ebzk.onrender.com/comentarios/1
+```
+
+#### **POST** - Criar comentário
+```bash
+curl -X POST https://comentario-ebzk.onrender.com/comentarios \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idUsuario": 1,
+    "idCampanha": 1,
+    "conteudo": "Projeto incrível! Muito sucesso!",
+    "dataComentario": "2025-11-26T12:00:00"
+  }'
+```
+
+#### **PUT** - Atualizar comentário
+```bash
+curl -X PUT https://comentario-ebzk.onrender.com/comentarios/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idUsuario": 1,
+    "idCampanha": 1,
+    "conteudo": "Comentário editado: Apoio total a essa iniciativa!",
+    "dataComentario": "2025-11-26T12:00:00"
+  }'
+```
+
+#### **DELETE** - Remover comentário
+```bash
+curl -X DELETE https://comentario-ebzk.onrender.com/comentarios/1
+```
+
+---
+
+### 💰 Serviço de Pagamentos
+
+#### **GET** - Listar todos os pagamentos
+```bash
+curl -X GET https://pagamentos-4e9r.onrender.com/pagamentos
+```
+
+#### **GET** - Buscar pagamento por ID
+```bash
+curl -X GET https://pagamentos-4e9r.onrender.com/pagamentos/1
+```
+
+#### **POST** - Criar pagamento
+```bash
+curl -X POST https://pagamentos-4e9r.onrender.com/pagamentos \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idUsuario": 1,
+    "idCampanha": 1,
+    "valor": 500.00,
+    "metodoPagamento": "cartao_credito",
+    "statusPagamento": "concluido",
+    "dataPagamento": "2025-11-26T14:30:00"
+  }'
+```
+
+#### **PUT** - Atualizar pagamento
+```bash
+curl -X PUT https://pagamentos-4e9r.onrender.com/pagamentos/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idUsuario": 1,
+    "idCampanha": 1,
+    "valor": 500.00,
+    "metodoPagamento": "cartao_credito",
+    "statusPagamento": "estornado",
+    "dataPagamento": "2025-11-26T14:30:00"
+  }'
+```
+
+#### **DELETE** - Remover pagamento
+```bash
+curl -X DELETE https://pagamentos-4e9r.onrender.com/pagamentos/1
+```
+
+---
+
+### 🎁 Serviço de Recompensas
+
+#### **GET** - Listar todas as recompensas
+```bash
+curl -X GET https://recompensas.onrender.com/recompensas
+```
+
+#### **GET** - Buscar recompensa por ID
+```bash
+curl -X GET https://recompensas.onrender.com/recompensas/1
+```
+
+#### **POST** - Criar recompensa
+```bash
+curl -X POST https://recompensas.onrender.com/recompensas \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idCampanha": 1,
+    "titulo": "Agradecimento Especial",
+    "descricao": "Nome no site e certificado digital",
+    "valorMinimo": 50.00,
+    "quantidadeDisponivel": 100
+  }'
+```
+
+#### **PUT** - Atualizar recompensa
+```bash
+curl -X PUT https://recompensas.onrender.com/recompensas/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "idCampanha": 1,
+    "titulo": "Agradecimento Premium",
+    "descricao": "Nome no site, certificado e camiseta exclusiva",
+    "valorMinimo": 100.00,
+    "quantidadeDisponivel": 50
+  }'
+```
+
+#### **DELETE** - Remover recompensa
+```bash
+curl -X DELETE https://recompensas.onrender.com/recompensas/1
+```
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+Crowdfunding/
+├── campanhas/                    # Microsserviço de Campanhas
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/eseg/campanhas/
+│   │   │   │   ├── controller/
+│   │   │   │   ├── model/
+│   │   │   │   ├── repository/
+│   │   │   │   ├── service/
+│   │   │   │   └── dto/
+│   │   │   └── resources/
+│   │   │       ├── application.properties
+│   │   │       └── data/
+│   │   └── test/
+│   ├── build.gradle.kts
+│   ├── Dockerfile
+│   └── README.md
+│
+├── usuarios/                     # Microsserviço de Usuários
+├── comentarios/                  # Microsserviço de Comentários
+├── pagamentos/                   # Microsserviço de Pagamentos
+├── recompensas/                  # Microsserviço de Recompensas
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml               # Pipeline CI/CD
+│
+├── docker-compose.yml           # Orquestração dos containers
+├── settings.gradle.kts          # Configuração multi-projeto
+├── build.gradle.kts             # Build global
+└── README.md                    # Este arquivo
+```
+
+---
+
+## 🔄 CI/CD
+
+O projeto utiliza **GitHub Actions** para automação de build e testes.
+
+### Pipeline Configurado
+
+- ✅ **Build automático** a cada push
+- ✅ **Execução de testes unitários**
+- ✅ **Validação do código**
+- ✅ **Notificação de falhas**
+
+### Visualizar Status
+
+Acesse a aba **Actions** no GitHub: [github.com/rappudo/Crowdfunding/actions](https://github.com/rappudo/Crowdfunding/actions)
+
+### Executar Testes Localmente
+
+```bash
+# Testar todos os serviços
 ./gradlew test
+
+# Testar serviço específico
+cd campanhas
+./gradlew test
+
+# Gerar relatório de cobertura
+./gradlew test jacocoTestReport
 ```
+---
 
-- O pipeline CI do GitHub também roda esses testes automaticamente a cada push ou pull request.
-- Na aba Actions do GitHub, verifique se o status do workflow está verde para confirmar o sucesso dos testes.
+## 📄 Licença
 
-***
+Este projeto é de código aberto para fins educacionais.
 
-## Exemplos de Teste com cURL
+---
 
-Aqui estão alguns exemplos para testar os microsserviços via terminal usando `curl`:
+## 👨‍💻 Autor
 
-### Campanhas
+**Desenvolvido por:** [rappudo](https://github.com/rappudo)
 
-- Lista todas as campanhas:
+**Repositório:** [github.com/rappudo/Crowdfunding](https://github.com/rappudo/Crowdfunding)
 
-```bash
-curl -X GET http://localhost:8080/campanhas
-```
 
-- Cria uma nova campanha:
+---
 
-```bash
-curl -X POST http://localhost:8080/campanhas \
--H 'Content-Type: application/json' \
--d '{
-  "titulo": "Campanha de Exemplo",
-  "descricao": "Descrição da campanha",
-  "meta": 10000,
-  "valorArrecadado": 0,
-  "status": 1
-}'
-```
+## 🎓 Aprendizados
 
-- Atualiza campanha existente:
+Este projeto demonstra conceitos fundamentais de:
 
-```bash
-curl -X PUT http://localhost:8080/campanhas/1 \
--H 'Content-Type: application/json' \
--d '{"valorArrecadado": 500}'
-```
+- Arquitetura de Microsserviços
+- RESTful APIs
+- Containerização com Docker
+- CI/CD com GitHub Actions
+- Versionamento com Git
+- Deploy em Cloud (Render)
+- Boas práticas de desenvolvimento Java/Spring Boot
 
-- Remove campanha:
-
-```bash
-curl -X DELETE http://localhost:8080/campanhas/1
-```
-
-(Substitua a URL e IDs conforme o serviço e dados criados.)
-
-***
-
-## Fluxo do Projeto e Entregas
-
-O projeto atende os seguintes requisitos da entrega:
-
-- Separação por microsserviços com código e Dockerfile próprios.
-- Comunicação REST com endpoints CRUD para cada serviço.
-- Uso opcional de persistência em JSON para dados simples.
-- Contêineres Docker configurados individualmente para cada serviço.
-- Testes unitários cobrindo regras básicas.
-- GitHub Actions configurado para CI, executando testes em push e pull requests.
-- Documentação clara e exemplos para rodar local e via Docker.
-- (Opcional) Deploy público registrado no README para bônus.
-
-***
-
+---
