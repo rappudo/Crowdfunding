@@ -7,14 +7,16 @@ public class Pagamento {
     private Long id;
     private BigDecimal valor;
     private Long idCampanha;
+    private Long idUsuario;
     private LocalDateTime dataPagamento;
 
     public Pagamento() {}
 
-    public Pagamento(Long id, BigDecimal valor, Long idCampanha, LocalDateTime dataPagamento) {
+    public Pagamento(Long id, BigDecimal valor, Long idCampanha, Long idUsuario, LocalDateTime dataPagamento) {
         this.id = id;
         this.valor = valor;
         this.idCampanha = idCampanha;
+        this.idUsuario = idUsuario;
         this.dataPagamento = dataPagamento;
     }
 
@@ -48,5 +50,13 @@ public class Pagamento {
 
     public void setDataPagamento(LocalDateTime dataPagamento) {
         this.dataPagamento = dataPagamento;
+    }
+
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 }
