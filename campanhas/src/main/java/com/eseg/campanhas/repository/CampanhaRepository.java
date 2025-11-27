@@ -113,8 +113,10 @@ public class CampanhaRepository {
 
     // 2. Buscar por Id
     public Optional<Campanha> findById(Long id) {
-        return loadAll().stream().filter(c -> c.getId().equals(id)).findFirst();
-    }
+    return loadAll().stream()
+        .filter(c -> c.getId() != null && c.getId().equals(id))  
+        .findFirst();
+}
 
     // 3. Adicionar nova campanha
     public Campanha save(Campanha novaCampanha) {
@@ -128,20 +130,37 @@ public class CampanhaRepository {
 
     // 4. Atualizar campanha por Id
     public void update(Long id, Campanha campanhaAtualizada) {
-        List<Campanha> campanhas = loadAll();
-        boolean updated = false;
-        for (int i = 0; i < campanhas.size(); i++) {
-            if (campanhas.get(i).getId().equals(id)) {
-                campanhas.set(i, campanhaAtualizada);
-                updated = true;
-                break;
+    List<Campanha> campanhas = loadAll();
+    boolean updated = false;
+    
+    for (int i = 0; i < campanhas.size(); i++) {
+        if (campanhas.get(i).getId() != null && campanhas.get(i).getId().equals(id)) {
+            campanhaAtualizada.setId(id);
+            
+            Campanha antiga = campanhas.get(i);
+            if (campanhaAtualizada.getIdComentarios() == null) {
+                campanhaAtualizada.setIdComentarios(antiga.getIdComentarios() != null ? antiga.getIdComentarios() : new ArrayList<>());
             }
+            if (campanhaAtualizada.getIdPagamentos() == null) {
+                campanhaAtualizada.setIdPagamentos(antiga.getIdPagamentos() != null ? antiga.getIdPagamentos() : new ArrayList<>());
+            }
+            if (campanhaAtualizada.getIdRecompensas() == null) {
+                campanhaAtualizada.setIdRecompensas(antiga.getIdRecompensas() != null ? antiga.getIdRecompensas() : new ArrayList<>());
+            }
+            
+            campanhas.set(i, campanhaAtualizada);
+            updated = true;
+            break;
         }
-        if (!updated) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha com id " + id + " não encontrada.");
-        }
-        saveAll(campanhas);
     }
+    
+    if (!updated) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Campanha com id " + id + " não encontrada.");
+    }
+    
+    saveAll(campanhas);
+    System.out.println("✅ Campanha " + id + " atualizada com sucesso!");
+}
 
     // 5. Remover campanha por ID
     public void deleteById(Long id) {
